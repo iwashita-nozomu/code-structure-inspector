@@ -152,7 +152,11 @@ fn language(path: &str) -> Option<&'static str> {
     }
 }
 fn clean_name(s: &str) -> bool {
-    !s.is_empty() && s.len() <= 256 && !s.chars().any(char::is_control)
+    !s.is_empty()
+        && s.len() <= 256
+        && !s.chars().any(char::is_control)
+        && !s.contains("/*")
+        && !s.contains("//")
 }
 fn dep(out: &mut Vec<Dependency>, path: &str, target: &str, kind: &str, line: usize) {
     if out.len() < MAX_ITEMS && clean_name(target) {
@@ -172,7 +176,8 @@ fn node_text<'a>(node: Node<'_>, source: &'a str) -> &'a str {
 fn declaration_name<'a>(mut node: Node<'_>, source: &'a str) -> Option<&'a str> {
     for _ in 0..32 {
         if let Some(name) = node.child_by_field_name("name") {
-            return Some(node_text(name, source));
+            node = name;
+            continue;
         }
         if let Some(next) = node.child_by_field_name("declarator") {
             node = next;
@@ -190,6 +195,41 @@ fn declaration_name<'a>(mut node: Node<'_>, source: &'a str) -> Option<&'a str> 
         }
     }
     None
+}
+
+fn rust_use_text(node: Node<'_>, source: &str) -> Option<String> {
+    if node.has_error() {
+        return None;
+    }
+    let mut stack = vec![node];
+    let mut result = String::new();
+    let mut visited = 0;
+    while let Some(item) = stack.pop() {
+        visited += 1;
+        if visited > 1024 || result.len() > 256 {
+            return None;
+        }
+        if item.kind().contains("comment") {
+            continue;
+        }
+        if item.child_count() == 0 {
+            let token = node_text(item, source);
+            if token == "as" {
+                result.push_str(" as ");
+            } else if token.chars().all(|c| c.is_alphanumeric() || c == '_')
+                || matches!(token, "::" | "{" | "}" | "," | "*")
+            {
+                result.push_str(token);
+            } else {
+                return None;
+            }
+        } else {
+            let mut cursor = item.walk();
+            let children: Vec<_> = item.children(&mut cursor).collect();
+            stack.extend(children.into_iter().rev());
+        }
+    }
+    Some(result)
 }
 
 fn unsupported_rust_scope(node: Node<'_>, source: &str) -> bool {
@@ -307,7 +347,8 @@ fn parse_source(
                     dep(
                         deps,
                         path,
-                        node_text(arg, source),
+                        &rust_use_text(arg, source)
+                            .unwrap_or_else(|| "unsupported_use_syntax".into()),
                         if unsupported_rust_scope(node, source) {
                             "rust_unsupported_use"
                         } else {

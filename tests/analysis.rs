@@ -185,3 +185,18 @@ fn path_attributes_and_inline_modules_are_not_falsely_resolved() {
             .any(|d| d.kind == "rust_unsupported_use")
     );
 }
+#[test]
+fn comments_are_not_returned_as_dependency_names() {
+    let f = Fixture::new();
+    f.write(
+        "main.rs",
+        "mod worker;\nuse crate:: /* private comment */ worker::run;\n",
+    );
+    f.write("worker.rs", "pub fn run() {}\n");
+    let r = inspect(&f.0).unwrap();
+    let encoded = serde_json::to_string(&r).unwrap();
+    assert!(!encoded.contains("private comment"));
+    assert!(r.dependencies.iter().any(|d| d.kind == "rust_use"
+        && d.target == "crate::worker::run"
+        && d.resolved.as_deref() == Some("worker.rs")));
+}
