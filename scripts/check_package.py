@@ -66,6 +66,16 @@ def check(binary=None):
         report = json.loads(subprocess.check_output([str(binary),'inspect',str(fixture)], text=True, timeout=15))
         validate(report, schema, schema)
         assert report['coverage']['syntax_error_files'] <= 1  # CUDA uses C++ fallback.
+        declarations = json.loads(subprocess.check_output([str(binary),'inspect',str(ROOT/'tests/declaration-fixtures')], text=True, timeout=15))
+        validate(declarations, schema, schema)
+        witnesses = {file['path']: {(s['name'],s['kind'],s['start_line'],s['end_line']) for s in file['symbols']} for file in declarations['files']}
+        for path, expected in {
+            'boundaries.rs': {('Worker','struct_item',2,4),('State','enum_item',5,7),('Runner','trait_item',8,10),('Count','type_item',11,11)},
+            'boundaries.hpp': {('analysis','namespace_definition',1,17),('Model','class_specifier',2,7),('Data','struct_specifier',8,10),('Mode','enum_specifier',11,13),('Box','class_specifier',22,23),('outer::inner','namespace_definition',30,34)},
+            'boundaries.cu': {('device','namespace_definition',1,8),('Buffer','struct_specifier',2,4),('update','function_definition',5,7)},
+            'boundaries.py': {('Experiment','class_definition',1,3),('run','function_definition',2,3)},
+        }.items():
+            assert expected <= witnesses[path], ('Missing release declaration witnesses',path)
         requests = [
             {'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-11-25','capabilities':{},'clientInfo':{'name':'package-check','version':'1'}}},
             {'jsonrpc':'2.0','method':'notifications/initialized'},
