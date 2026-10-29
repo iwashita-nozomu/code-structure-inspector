@@ -11,7 +11,7 @@ import tarfile
 import tempfile
 import tomllib
 import zipfile
-from check_package import check
+from check_package import check, check_packaged_launch
 ROOT = Path(__file__).resolve().parents[1]
 NAME = 'code-structure-inspector'
 TARGETS = {'aarch64-apple-darwin','x86_64-unknown-linux-gnu','x86_64-pc-windows-msvc'}
@@ -51,6 +51,7 @@ def main():
         binary_hash=hashlib.sha256(binary.read_bytes()).hexdigest()
         (stage/'binary.sha256').write_text(f'{binary_hash}  bin/{executable}\n')
         (stage/'build-info.json').write_text(json.dumps({'version':version,'target':args.target,'source_commit':commit,'compiler':compiler,'binary_sha256':binary_hash},indent=2)+'\n')
+        check_packaged_launch(stage)
         files=sorted(p for p in stage.rglob('*') if p.is_file())
         assert not any(p.is_symlink() for p in stage.rglob('*'))
         if suffix=='.zip':

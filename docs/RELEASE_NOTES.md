@@ -1,5 +1,16 @@
 # Release notes
 
+## 0.1.2
+
+Use the host-compatible relative MCP executable `./bin/code-structure-inspector`
+(`.exe` on Windows) with `cwd: ${PLUGIN_ROOT}` in both portable and compatibility
+MCP manifests. The executable command no longer depends on variable expansion
+inside `command`. This matches the working Git plugin on the current Mac host.
+
+Packaging now resolves and executes both manifests from the staged plugin root,
+checking MCP initialize and tool discovery. That packaging check is distinct from
+discovery in the Codex host, which must be verified after installation.
+
 ## 0.1.1
 
 Fix omitted declaration names when Tree-sitter represents them as

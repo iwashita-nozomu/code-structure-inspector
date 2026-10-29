@@ -3,7 +3,7 @@
   "mcpServers": {
     "code-structure-inspector": {
       "type": "stdio",
-      "command": "${PLUGIN_ROOT}/bin/code-structure-inspector",
+      "command": "./bin/code-structure-inspector",
       "args": [
         "mcp"
       ],

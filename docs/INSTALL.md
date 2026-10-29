@@ -31,6 +31,11 @@ Never overwrite an existing plugin without reviewing its identity and version.
 No account scopes, authentication, new global security configuration or automatic
 update trust setting is needed.
 
+Both MCP manifests use a relative executable command under `./bin/` and
+`cwd: ${PLUGIN_ROOT}`. The host must resolve the executable from the installed
+plugin root; do not assume it expands `${PLUGIN_ROOT}` inside a command string.
+The source/binary package check alone cannot establish host compatibility.
+
 After the host reload/install step, verify initialize, tools/list, the explicit-only
 Skill, and inspect_repository on a synthetic fixture. A successful CLI/stdio test
 is useful evidence but does not by itself prove Codex host installation.

@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "code-structure-inspector",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "Bounded local code structure and dependency evidence through a Rust stdio MCP server.",
   "author": {
     "name": "iwashita-nozomu",

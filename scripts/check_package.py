@@ -53,7 +53,8 @@ def check(binary=None):
     server = new_mcp['mcpServers']['code-structure-inspector'].copy()
     assert server.pop('type') == 'stdio'
     assert server == old_mcp['mcpServers']['code-structure-inspector']
-    assert server['command'] == '${PLUGIN_ROOT}/bin/code-structure-inspector' and server['args'] == ['mcp']
+    assert server['command'] == './bin/code-structure-inspector' and server['args'] == ['mcp']
+    assert server['cwd'] == '${PLUGIN_ROOT}' and '${' not in server['command']
     skill = PLUGIN/'skills/inspect-code-structure'
     assert (skill/'SKILL.md').read_text().startswith('---\nname: inspect-code-structure\n')
     assert 'allow_implicit_invocation: false' in (skill/'agents/openai.yaml').read_text()
@@ -90,6 +91,27 @@ def check(binary=None):
         assert result['isError'] is False
         validate(json.loads(result['content'][0]['text']), schema, schema)
     print(json.dumps({'plugin':'verified','schema_version':1,'binary_smoke':bool(binary)}))
+
+def check_packaged_launch(stage):
+    stage=stage.resolve()
+    for filename in ['mcp.json','.mcp.json']:
+        doc=json.loads((stage/filename).read_text())
+        server=doc['mcpServers']['code-structure-inspector']
+        command=server['command']
+        assert command.startswith('./bin/') and '${' not in command
+        assert server['cwd']=='${PLUGIN_ROOT}' and server['args']==['mcp']
+        resolved=(stage/command).resolve(strict=True)
+        assert resolved.is_relative_to(stage) and resolved.is_file() and not (stage/command).is_symlink()
+        requests=[
+            {'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-11-25','capabilities':{},'clientInfo':{'name':'manifest-launch-check','version':'1'}}},
+            {'jsonrpc':'2.0','method':'notifications/initialized'},
+            {'jsonrpc':'2.0','id':2,'method':'tools/list'},
+        ]
+        out=subprocess.run([str(resolved),*server['args']],cwd=stage,input=''.join(json.dumps(r)+'\n' for r in requests),text=True,capture_output=True,check=True,timeout=20)
+        messages=[json.loads(line) for line in out.stdout.splitlines()]
+        assert not out.stderr and len(messages)==2
+        assert [t['name'] for t in messages[1]['result']['tools']]==['inspect_repository','related_files']
+    print(json.dumps({'packaged_manifest_launch':'verified','host_discovery':'separate installation check required'}))
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
