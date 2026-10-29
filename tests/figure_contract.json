@@ -1,0 +1,35 @@
+{
+  "view_contract_version": 1,
+  "view_id": "code-responsibilities",
+  "panels": [
+    {"id": "responsibilities", "title": "各部品の責務", "claim_ids": ["role-coordinator", "role-validator", "role-reducer"], "node_ids": ["coordinator", "validator", "reducer"], "edge_ids": []},
+    {"id": "dependencies", "title": "依存する意味", "claim_ids": ["uses-validator", "uses-reducer"], "node_ids": ["coordinator", "validator", "reducer"], "edge_ids": ["dep-validator", "dep-reducer"]},
+    {"id": "impact", "title": "候補影響", "claim_ids": ["impact-validator"], "node_ids": ["validator", "coordinator"], "edge_ids": ["impact-caller"]}
+  ],
+  "claims": [
+    {"id": "role-coordinator", "text": "行ごとの変換をまとめて合計を依頼する", "status": "gpt_interpretation", "evidence": ["S3"]},
+    {"id": "role-validator", "text": "文字列を検証し整数へ変換する", "status": "gpt_interpretation", "evidence": ["S1"]},
+    {"id": "role-reducer", "text": "渡された値を合計する", "status": "gpt_interpretation", "evidence": ["S2"]},
+    {"id": "uses-validator", "text": "合計前に各行の検証を依頼する", "status": "gpt_interpretation", "evidence": ["F1", "S3"]},
+    {"id": "uses-reducer", "text": "変換した値の集計を依頼する", "status": "gpt_interpretation", "evidence": ["F2", "S3"]},
+    {"id": "impact-validator", "text": "検証契約の変更は呼び出し元の受付・失敗条件へ影響し得る", "status": "gpt_interpretation", "evidence": ["S1", "S3"]}
+  ],
+  "nodes": [
+    {"id": "coordinator", "component": "train.py", "label": "行の変換をまとめる", "claim_ids": ["role-coordinator"]},
+    {"id": "validator", "component": "cache.py", "label": "検証・整数化", "claim_ids": ["role-validator"]},
+    {"id": "reducer", "component": "renderer.py", "label": "値を合計", "claim_ids": ["role-reducer"]}
+  ],
+  "edges": [
+    {"id": "dep-validator", "from": "coordinator", "to": "validator", "claim_ids": ["uses-validator"], "basis": "layout_candidate", "observation": "F1"},
+    {"id": "dep-reducer", "from": "coordinator", "to": "reducer", "claim_ids": ["uses-reducer"], "basis": "layout_candidate", "observation": "F2"},
+    {"id": "impact-caller", "from": "validator", "to": "coordinator", "claim_ids": ["impact-validator"], "basis": "gpt_interpretation"}
+  ],
+  "evidence": {
+    "S1": {"kind": "source_selection", "ref": "S1"},
+    "S2": {"kind": "source_selection", "ref": "S2"},
+    "S3": {"kind": "source_selection", "ref": "S3"},
+    "F1": {"kind": "import_fact", "from": "train.py", "target": "cache", "line": 1},
+    "F2": {"kind": "import_fact", "from": "train.py", "target": "renderer", "line": 2}
+  },
+  "layout": {"strategy": "native-auto", "direction": "LR"}
+}

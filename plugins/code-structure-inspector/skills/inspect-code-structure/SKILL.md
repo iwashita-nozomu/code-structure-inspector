@@ -31,7 +31,12 @@ Use the user's language.
    impact question; it is an independent read of the same authorized root.
    Describe a change's **candidate impact**, evidence and uncertainty; graph
    reachability alone is not a guaranteed breakage or complete call graph.
-5. Return a concise meaning-first explanation and a diagram using the host's
+5. Prepare an [evidence-linked figure plan](references/figure-contract.md): concise
+   claims and declarative relationships, explicit stable panel/node/claim IDs,
+   and one citation registry shared by text and figure. Let supported native
+   layout compute geometry; do not guess coordinates or add a renderer. For a
+   focused follow-up, update by ID and preserve unrelated meaning/evidence.
+   Return a concise meaning-first explanation and a diagram using the host's
    **native visualize** capability. Read/follow the available visualize skill;
    do not create a plugin renderer, HTTP server, WebView or shared orchestrator.
    Put responsibility summaries on nodes, the dependency's meaning on relevant

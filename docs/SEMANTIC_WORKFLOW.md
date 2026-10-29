@@ -14,6 +14,13 @@ A user's normal request should produce a meaning-first explanation with cited
 relative source ranges, a useful native visualization, and explicit uncertainty.
 The raw machine graph is an input to that answer, not the entire answer.
 
+Before rendering, prepare a small [evidence-linked figure plan](../plugins/code-structure-inspector/skills/inspect-code-structure/references/figure-contract.md).
+GPT supplies meaning and citations; supported native layout supplies geometry.
+Stable response-local IDs connect prose claims to nodes/edges and preserve
+unrelated content during a focused follow-up. This adds no renderer or patch API.
+If native partial update is unavailable, rerender with the same IDs rather than
+inventing incremental-update support.
+
 Source names/ranges alone cannot establish responsibility. Select up to four
 reported files and 240 lines initially (80 per range) through existing permitted
 host reads. Respect the same root and exclusions. If source access is missing,
