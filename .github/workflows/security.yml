@@ -1,0 +1,24 @@
+name: Dependency security
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  schedule:
+    - cron: '17 3 * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rustsec:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          persist-credentials: false
+      - run: rustup toolchain install 1.99.1 --profile minimal --no-self-update
+      - name: Pinned RustSec tool
+        run: cargo install cargo-audit --version 0.22.2 --locked
+      - name: Advisory check, no automatic modification
+        run: cargo audit --deny warnings

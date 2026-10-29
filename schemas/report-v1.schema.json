@@ -1,0 +1,288 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/iwashita-nozomu/code-structure-inspector/blob/main/schemas/report-v1.schema.json",
+  "title": "Code Structure Inspector report v1",
+  "type": "object",
+  "required": [
+    "schema_version",
+    "analyzer_version",
+    "analysis",
+    "files",
+    "dependencies",
+    "cycles",
+    "coverage",
+    "limits",
+    "limitations",
+    "mermaid"
+  ],
+  "properties": {
+    "schema_version": {
+      "const": 1
+    },
+    "analyzer_version": {
+      "type": "string"
+    },
+    "analysis": {
+      "const": "syntactic_evidence"
+    },
+    "files": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/file"
+      }
+    },
+    "dependencies": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/dependency"
+      }
+    },
+    "cycles": {
+      "type": "array",
+      "items": {
+        "type": "array",
+        "items": {
+          "type": "string"
+        }
+      }
+    },
+    "coverage": {
+      "$ref": "#/$defs/coverage"
+    },
+    "limits": {
+      "$ref": "#/$defs/limits"
+    },
+    "limitations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "mermaid": {
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "$defs": {
+    "symbol": {
+      "type": "object",
+      "required": [
+        "name",
+        "kind",
+        "start_line",
+        "end_line"
+      ],
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "start_line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "end_line": {
+          "type": "integer",
+          "minimum": 1
+        }
+      },
+      "additionalProperties": false
+    },
+    "file": {
+      "type": "object",
+      "required": [
+        "path",
+        "language",
+        "lines",
+        "parse_status",
+        "symbols"
+      ],
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "language": {
+          "enum": [
+            "rust",
+            "python",
+            "cpp",
+            "cuda",
+            "manifest"
+          ]
+        },
+        "lines": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "parse_status": {
+          "enum": [
+            "parsed",
+            "cpp_syntax_only",
+            "syntax_errors",
+            "parse_timeout",
+            "ast_limit",
+            "parser_unavailable",
+            "declared_only"
+          ]
+        },
+        "symbols": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/symbol"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "dependency": {
+      "type": "object",
+      "required": [
+        "from",
+        "target",
+        "kind",
+        "line",
+        "resolved",
+        "resolution"
+      ],
+      "properties": {
+        "from": {
+          "type": "string"
+        },
+        "target": {
+          "type": "string"
+        },
+        "kind": {
+          "type": "string"
+        },
+        "line": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "resolved": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "resolution": {
+          "enum": [
+            "unresolved",
+            "layout_candidate",
+            "literal_relative_path",
+            "ambiguous"
+          ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "coverage": {
+      "type": "object",
+      "required": [
+        "entries_visited",
+        "files_read",
+        "bytes_read",
+        "excluded_entries",
+        "unsupported_files",
+        "skipped_files",
+        "syntax_error_files",
+        "unresolved_dependencies",
+        "truncated",
+        "reasons"
+      ],
+      "properties": {
+        "entries_visited": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "files_read": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "bytes_read": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "excluded_entries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unsupported_files": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "skipped_files": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "syntax_error_files": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "unresolved_dependencies": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "truncated": {
+          "type": "boolean"
+        },
+        "reasons": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    "limits": {
+      "type": "object",
+      "required": [
+        "max_files",
+        "max_entries",
+        "max_file_bytes",
+        "max_total_bytes",
+        "max_depth",
+        "time_budget_ms",
+        "max_ast_nodes_per_file",
+        "max_dependencies"
+      ],
+      "properties": {
+        "max_files": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_entries": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_file_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_total_bytes": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_depth": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "time_budget_ms": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_ast_nodes_per_file": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "max_dependencies": {
+          "type": "integer",
+          "minimum": 0
+        }
+      },
+      "additionalProperties": false
+    }
+  }
+}

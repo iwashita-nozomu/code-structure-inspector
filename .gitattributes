@@ -1,0 +1,3 @@
+* text eol=lf
+third-party/** -text -whitespace
+scripts/upstream-licenses/** -text -whitespace

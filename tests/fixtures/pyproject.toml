@@ -1,0 +1,8 @@
+[project]
+name = "synthetic-fixture"
+version = "0.0.0"
+dependencies = [
+  "numpy>=2",
+]
+[project.optional-dependencies]
+plot = ["matplotlib"]

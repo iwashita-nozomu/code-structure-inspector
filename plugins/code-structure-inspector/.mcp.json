@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "code-structure-inspector": {
+      "command": "${PLUGIN_ROOT}/bin/code-structure-inspector",
+      "args": [
+        "mcp"
+      ],
+      "cwd": "${PLUGIN_ROOT}"
+    }
+  }
+}

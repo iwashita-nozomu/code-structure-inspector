@@ -1,0 +1,32 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "code-structure-inspector",
+  "version": "0.1.0",
+  "description": "Bounded local code structure and dependency evidence through a Rust stdio MCP server.",
+  "author": {
+    "name": "iwashita-nozomu",
+    "url": "https://github.com/iwashita-nozomu"
+  },
+  "homepage": "https://github.com/iwashita-nozomu/code-structure-inspector",
+  "repository": "https://github.com/iwashita-nozomu/code-structure-inspector",
+  "license": "MIT",
+  "keywords": [
+    "codex",
+    "mcp",
+    "static-analysis",
+    "dependencies"
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "Code Structure Inspector",
+        "shortDescription": "Inspect code dependencies",
+        "longDescription": "Read local declaration boundaries, file dependencies and cycles with file/line evidence and explicit coverage limits. Rust/Python/C++ syntax; CUDA C++ fallback.",
+        "developerName": "iwashita-nozomu",
+        "category": "Productivity",
+        "capabilities": [],
+        "defaultPrompt": "Inspect the structure of my authorized local repository."
+      }
+    }
+  }
+}

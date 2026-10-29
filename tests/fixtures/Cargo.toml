@@ -1,0 +1,9 @@
+[package]
+name = "synthetic-fixture"
+version = "0.0.0"
+[dependencies]
+serde = "1"
+[target.'cfg(windows)'.dependencies]
+serde = "1"
+[workspace.dependencies]
+widget = { path = "local-widget" }

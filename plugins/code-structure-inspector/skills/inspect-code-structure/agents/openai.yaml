@@ -1,0 +1,6 @@
+interface:
+  display_name: "Inspect Code Structure"
+  short_description: "Read dependency and declaration evidence"
+  default_prompt: "Inspect my authorized repository and explain the dependency evidence and analysis limits."
+policy:
+  allow_implicit_invocation: false
