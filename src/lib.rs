@@ -129,13 +129,27 @@ fn excluded(name: &str) -> bool {
         || n.ends_with(".key")
 }
 fn path_string(path: &Path) -> Option<String> {
-    let s = path.to_str()?.replace('\\', "/");
-    if s.len() > 512 || s.chars().any(char::is_control) {
+    // Serialize native components rather than rewriting filename characters.
+    // Unix permits literal backslashes, which would be ambiguous in portable IDs.
+    let mut parts = Vec::new();
+    for component in path.components() {
+        let Component::Normal(name) = component else {
+            return None;
+        };
+        let name = name.to_str()?;
+        if name.contains('\\') || name.chars().any(char::is_control) {
+            return None;
+        }
+        parts.push(name);
+    }
+    let s = parts.join("/");
+    if s.is_empty() || s.len() > 512 {
         None
     } else {
         Some(s)
     }
 }
+
 fn language(path: &str) -> Option<&'static str> {
     if matches!(
         Path::new(path).file_name().and_then(|s| s.to_str()),
@@ -186,6 +200,7 @@ fn declaration_name<'a>(mut node: Node<'_>, source: &'a str) -> Option<&'a str> 
             "identifier"
                 | "type_identifier"
                 | "namespace_identifier"
+                | "nested_namespace_specifier"
                 | "field_identifier"
                 | "qualified_identifier"
                 | "operator_name"
@@ -627,6 +642,9 @@ pub fn inspect(root: &Path) -> Result<Report, Failure> {
             let rel = relative.join(&name);
             let Some(path) = path_string(&rel) else {
                 r.coverage.skipped_files += 1;
+                r.coverage
+                    .reasons
+                    .insert("unsupported_path_encoding".into());
                 continue;
             };
             let Ok(metadata) = dir.symlink_metadata(&rel) else {
@@ -750,7 +768,13 @@ fn normalize(path: &Path) -> Option<String> {
     let mut parts = vec![];
     for part in path.components() {
         match part {
-            Component::Normal(s) => parts.push(s.to_str()?),
+            Component::Normal(s) => {
+                let name = s.to_str()?;
+                if name.contains('\\') || name.chars().any(char::is_control) {
+                    return None;
+                }
+                parts.push(name);
+            }
             Component::CurDir => {}
             Component::ParentDir => {
                 parts.pop()?;
@@ -863,16 +887,30 @@ fn resolve(r: &mut Report) {
             }
             _ => vec![],
         };
+        if d.kind == "rust_use" {
+            // Each adjacent pair is one module prefix: foo.rs and foo/mod.rs.
+            // Pairs run deepest first; stop at the first matching depth, so a
+            // shallower symbol-suffix fallback cannot hide same-depth ambiguity.
+            for group in candidates.as_chunks::<2>().0 {
+                let found: Vec<_> = group.iter().filter(|path| files.contains(*path)).collect();
+                if found.is_empty() {
+                    continue;
+                }
+                if found.len() == 1 {
+                    d.resolved = Some(found[0].clone());
+                    d.resolution = "layout_candidate".into();
+                } else {
+                    d.resolution = "ambiguous".into();
+                }
+                break;
+            }
+            continue;
+        }
         let found: Vec<_> = candidates
             .into_iter()
             .filter(|c| files.contains(c))
             .collect();
-        if d.kind == "rust_use" {
-            if let Some(first) = found.first() {
-                d.resolved = Some(first.clone());
-                d.resolution = "layout_candidate".into();
-            }
-        } else if found.len() == 1 {
+        if found.len() == 1 {
             d.resolved = Some(found[0].clone());
             d.resolution = if d.kind == "cpp_quoted_include" {
                 "literal_relative_path"

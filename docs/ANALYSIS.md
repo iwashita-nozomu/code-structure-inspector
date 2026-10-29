@@ -11,7 +11,10 @@ connected file groups in that candidate graph. Mermaid includes every scanned
 file and deduplicated resolved file edges; evidence remains in JSON.
 
 Rust resolution handles out-of-line `mod` and simple `crate`/`self`/`super` use
-paths under the nearest scanned crate root. Grouped uses, macros, external crates,
+paths under the nearest scanned crate root. For `use`, the longest matching
+module prefix is considered first; `prefix.rs` and `prefix/mod.rs` at that depth
+must yield exactly one file, otherwise the dependency is ambiguous. A shallower
+symbol-suffix fallback does not override that ambiguity. Grouped uses, macros, external crates,
 path attributes and inline module namespaces are unresolved. Features and cfg
 are not evaluated. Symbol suffix removal is only a file-layout candidate.
 
@@ -34,6 +37,9 @@ as incomplete. Coverage counts unsupported/excluded/skipped entries and unresolv
 dependencies. Limits: 500 read files, 10,000 visited entries, 1 MiB per file,
 16 MiB total, directory depth 32, 100,000 AST nodes/file, 1,000 symbols/file,
 10,000 dependencies and a cooperative five-second scan budget (500 ms/parser).
+File IDs serialize native path components with `/` separators. Unix filenames
+containing literal backslashes are explicitly skipped (`unsupported_path_encoding`)
+so distinct filesystem names cannot collapse to the same ID.
 The filesystem snapshot is not atomic. Enumeration and bounded reads are
 synchronous; OS I/O can exceed the cooperative budget. Do not scan a filesystem
 that is being concurrently mutated. Capability-based opens prevent path escape;

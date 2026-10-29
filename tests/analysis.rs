@@ -200,3 +200,76 @@ fn comments_are_not_returned_as_dependency_names() {
         && d.target == "crate::worker::run"
         && d.resolved.as_deref() == Some("worker.rs")));
 }
+#[test]
+fn rust_use_ambiguity_is_decided_at_the_longest_matching_module_prefix() {
+    let f = Fixture::new();
+    f.write(
+        "main.rs",
+        "mod worker;\nuse crate::worker::run;\nuse crate::worker::run::Item;\n",
+    );
+    f.write("worker.rs", "pub fn run() {}\n");
+    f.write("worker/mod.rs", "pub fn run() {}\n");
+    let r = inspect(&f.0).unwrap();
+    for d in &r.dependencies {
+        assert_eq!(d.resolution, "ambiguous", "Arbitrary Rust candidate: {d:?}");
+        assert!(d.resolved.is_none());
+    }
+    f.write("worker/run.rs", "pub struct Item;\n");
+    let r = inspect(&f.0).unwrap();
+    for d in r.dependencies.iter().filter(|d| d.kind == "rust_use") {
+        assert_eq!(d.resolution, "layout_candidate");
+        assert_eq!(d.resolved.as_deref(), Some("worker/run.rs"));
+    }
+    f.write("worker/run/mod.rs", "pub struct Item;\n");
+    let r = inspect(&f.0).unwrap();
+    for d in &r.dependencies {
+        assert_eq!(
+            d.resolution, "ambiguous",
+            "Same-depth candidates must remain ambiguous: {d:?}"
+        );
+        assert!(d.resolved.is_none());
+    }
+}
+
+#[cfg(unix)]
+#[test]
+fn unix_backslash_names_are_explicitly_rejected_without_path_id_collisions() {
+    let f = Fixture::new();
+    f.write("src\\worker.rs", "pub fn unrelated() {}\n");
+    f.write("src/worker.rs", "pub fn run() {}\n");
+    f.write("main.rs", "use crate::src::worker::run;\n");
+    f.write(
+        "main.cpp",
+        "#include \"src\\worker.rs\"\n#include \"src/worker.rs\"\n",
+    );
+    let r = inspect(&f.0).unwrap();
+    assert_eq!(
+        r.files
+            .iter()
+            .map(|file| file.path.as_str())
+            .collect::<Vec<_>>(),
+        vec!["main.cpp", "main.rs", "src/worker.rs"]
+    );
+    assert_eq!(r.coverage.skipped_files, 1);
+    assert!(r.coverage.reasons.contains("unsupported_path_encoding"));
+    for file in &r.files {
+        assert!(
+            f.0.join(&file.path).is_file(),
+            "Source path does not round-trip: {}",
+            file.path
+        );
+    }
+    let literal_backslash = r
+        .dependencies
+        .iter()
+        .find(|d| d.from == "main.cpp" && d.line == 1)
+        .unwrap();
+    assert_eq!(literal_backslash.target, "src\\worker.rs");
+    assert!(literal_backslash.resolved.is_none());
+    let separator = r
+        .dependencies
+        .iter()
+        .find(|d| d.from == "main.cpp" && d.line == 2)
+        .unwrap();
+    assert_eq!(separator.resolved.as_deref(), Some("src/worker.rs"));
+}
