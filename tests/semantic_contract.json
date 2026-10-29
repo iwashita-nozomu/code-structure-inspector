@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "fixture_root": "tests/semantic-fixtures",
+  "source_budget": {"max_files": 4, "max_lines_total": 240, "max_lines_per_range": 80},
+  "selections": [
+    {"id": "S1", "path": "cache.py", "symbol": "parse_count", "start_line": 1, "end_line": 5, "observed_operations": ["strip", "isdecimal", "ValueError", "int"]},
+    {"id": "S2", "path": "renderer.py", "symbol": "total", "start_line": 1, "end_line": 5, "observed_operations": ["for value in values", "result += value", "return result"]},
+    {"id": "S3", "path": "train.py", "symbol": "summarize_rows", "start_line": 4, "end_line": 8, "observed_operations": ["for row in rows", "parse_count(row)", "total(counts)"]}
+  ],
+  "import_facts": [
+    {"from": "train.py", "target": "cache", "kind": "python_from", "line": 1, "resolved": "cache.py", "resolution": "layout_candidate"},
+    {"from": "train.py", "target": "renderer", "kind": "python_from", "line": 2, "resolved": "renderer.py", "resolution": "layout_candidate"}
+  ],
+  "interpretations": [
+    {"component": "cache.py", "role": "Validate and convert a trimmed decimal count string", "evidence": ["S1"]},
+    {"component": "renderer.py", "role": "Accumulate the supplied numeric values", "evidence": ["S2"]},
+    {"component": "train.py", "role": "Coordinate per-row validation and request aggregation", "evidence": ["S1", "S2", "S3"]}
+  ],
+  "diagram": {
+    "responsibility_nodes": ["cache.py", "renderer.py", "train.py"],
+    "meaning_edges": [
+      {"from": "train.py", "to": "cache.py", "meaning": "Validate each input row before aggregation", "source": "S3", "line": 7},
+      {"from": "train.py", "to": "renderer.py", "meaning": "Aggregate the converted counts", "source": "S3", "line": 8}
+    ],
+    "candidate_impact": {"changed_component": "cache.py", "affected_caller": "train.py", "evidence": ["S1", "S3"], "guaranteed_breakage": false},
+    "source_snippets_in_payload": false,
+    "private_values_in_payload": false
+  },
+  "forbidden_name_only_claims": ["train.py trains a model", "cache.py persists a cache", "renderer.py renders a GUI"],
+  "automated_test_is_a_gpt_quality_proof": false
+}

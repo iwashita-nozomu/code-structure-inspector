@@ -1,7 +1,7 @@
 {
   "name": "code-structure-inspector",
-  "version": "0.1.2",
-  "description": "Bounded local code structure and dependency evidence through a Rust stdio MCP server.",
+  "version": "0.2.0",
+  "description": "Read-only code evidence and a Codex GPT workflow for source-backed responsibilities, dependency meaning and native visualization.",
   "author": {
     "name": "iwashita-nozomu",
     "url": "https://github.com/iwashita-nozomu"
@@ -19,11 +19,11 @@
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Code Structure Inspector",
-    "shortDescription": "Inspect code dependencies",
-    "longDescription": "Read local declaration boundaries, file dependencies and cycles with file/line evidence and explicit coverage limits. Rust/Python/C++ syntax; CUDA C++ fallback.",
+    "shortDescription": "Explain code responsibilities",
+    "longDescription": "Inspect bounded local syntax facts, then let Codex GPT explain responsibilities and candidate impact from selected source evidence and return a native visualization. No external AI API or custom LLM runtime.",
     "developerName": "iwashita-nozomu",
     "category": "Productivity",
     "capabilities": [],
-    "defaultPrompt": "Inspect the structure of my authorized local repository."
+    "defaultPrompt": "Explain my code responsibilities and dependency meaning with source evidence and a native visualization."
   }
 }

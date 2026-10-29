@@ -1,5 +1,19 @@
 # Release notes
 
+## 0.2.0
+
+Add an explicit Codex GPT semantic workflow: observe structural facts, read a
+small selection of already-authorized source through the host, explain component
+responsibilities/dependency meaning/candidate impact with witnesses, and return a
+native visualization. Missing source yields an explicit evidence gap; misleading
+file names are not substituted for semantic understanding.
+
+Bundle selection and diagram acceptance references and synthetic misleading-name
+fixtures. Keep machine facts, GPT interpretations and unknowns distinct. The
+runtime adds no model API, reader tool, network, persistent state or orchestrator.
+CI checks the fixture evidence contract; it does not call an AI service or claim
+to prove every future GPT answer. Existing protocol/schema/tool surface is retained.
+
 ## 0.1.2
 
 Use the host-compatible relative MCP executable `./bin/code-structure-inspector`

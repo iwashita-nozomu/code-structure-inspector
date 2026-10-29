@@ -4,7 +4,7 @@ A Rust CLI and local Codex plugin that turns an explicitly authorized repository
 into bounded, file/line-backed dependency evidence. MIT project code; dependency
 licenses are preserved in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 
-## What v0.1 provides
+## What it provides
 
 - Rust, Python and C/C++ declaration names and source line ranges via Tree-sitter.
   CUDA files use the C++ grammar; CUDA syntax failures are visible.
@@ -13,12 +13,17 @@ licenses are preserved in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 - Local file layout candidates, unresolved/ambiguous dependencies, strongly
   connected groups, direct related files and a Mermaid file dependency diagram.
 - JSON schema v1, CLI and two read-only MCP tools: `inspect_repository`,
-  `related_files`. An explicit-only Skill guides evidence-based explanations.
+  `related_files`. An explicit-only Skill uses Codex GPT to explain responsibilities,
+  dependency meaning and candidate change impact from selected source witnesses,
+  then returns a native visualization. No external AI API or custom LLM runtime.
 
 This is syntactic evidence, not a complete call graph. Responsibilities are
 interpretations for Codex to support with declaration and source evidence. No
 compiler, build, import, shell, compile database, renderer or repository-provided
 command is run. See [analysis limits](docs/ANALYSIS.md) before drawing conclusions.
+
+For the meaning/diagram workflow, selected source budget, fallback behavior and
+synthetic user-facing acceptance example, see [semantic workflow](docs/SEMANTIC_WORKFLOW.md).
 
 ## Use a release
 

@@ -58,6 +58,12 @@ def check(binary=None):
     skill = PLUGIN/'skills/inspect-code-structure'
     assert (skill/'SKILL.md').read_text().startswith('---\nname: inspect-code-structure\n')
     assert 'allow_implicit_invocation: false' in (skill/'agents/openai.yaml').read_text()
+    workflow=(skill/'SKILL.md').read_text()
+    for reference in ['source-evidence.md','acceptance.md']:
+        assert ('references/'+reference) in workflow
+        text=(skill/'references'/reference).read_text()
+        assert len(text)>500
+    assert 'Codex GPT' in workflow and 'native visualize' in workflow
     assert not any(p.is_symlink() for p in PLUGIN.rglob('*'))
     for p in PLUGIN.rglob('*.json'):
         json.loads(p.read_text())
@@ -77,6 +83,14 @@ def check(binary=None):
             'boundaries.py': {('Experiment','class_definition',1,3),('run','function_definition',2,3)},
         }.items():
             assert expected <= witnesses[path], ('Missing release declaration witnesses',path)
+        semantics=json.loads(subprocess.check_output([str(binary),'inspect',str(ROOT/'tests/semantic-fixtures')], text=True, timeout=15))
+        contract=json.loads((ROOT/'tests/semantic_contract.json').read_text())
+        validate(semantics,schema,schema)
+        assert semantics['dependencies']==contract['import_facts']
+        for selected in contract['selections']:
+            file=next(f for f in semantics['files'] if f['path']==selected['path'])
+            assert any(s['name']==selected['symbol'] and s['start_line']==selected['start_line'] and s['end_line']==selected['end_line'] for s in file['symbols'])
+        assert 'interpretations' not in semantics and 'responsibilities' not in semantics
         requests = [
             {'jsonrpc':'2.0','id':1,'method':'initialize','params':{'protocolVersion':'2025-11-25','capabilities':{},'clientInfo':{'name':'package-check','version':'1'}}},
             {'jsonrpc':'2.0','method':'notifications/initialized'},
@@ -94,6 +108,9 @@ def check(binary=None):
 
 def check_packaged_launch(stage):
     stage=stage.resolve()
+    for reference in ['SKILL.md','references/source-evidence.md','references/acceptance.md']:
+        relative=Path('skills/inspect-code-structure')/reference
+        assert (stage/relative).read_bytes()==(PLUGIN/relative).read_bytes()
     for filename in ['mcp.json','.mcp.json']:
         doc=json.loads((stage/filename).read_text())
         server=doc['mcpServers']['code-structure-inspector']
