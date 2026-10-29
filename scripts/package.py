@@ -24,7 +24,7 @@ def main():
     binary=args.binary.resolve()
     check(binary)
     subprocess.run(['python3' if os.name!='nt' else 'python',str(ROOT/'scripts/licenses.py'),'--check'],check=True)
-    version=tomllib.loads((ROOT/'Cargo.toml').read_text())['package']['version']
+    version=tomllib.loads((ROOT/'Cargo.toml').read_text(encoding="utf-8"))['package']['version']
     assert subprocess.check_output([str(binary),'--version'],text=True).strip()==f'{NAME} {version}'
     commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
     compiler=subprocess.check_output(['rustc','--version'],text=True).strip()
@@ -41,7 +41,7 @@ def main():
         (stage/'bin'/executable).chmod(0o755)
         if executable.endswith('.exe'):
             for p in [stage/'mcp.json',stage/'.mcp.json']:
-                doc=json.loads(p.read_text())
+                doc=json.loads(p.read_text(encoding="utf-8"))
                 doc['mcpServers'][NAME]['command'] += '.exe'
                 p.write_text(json.dumps(doc,indent=2)+'\n')
         for file in ['LICENSE','THIRD_PARTY_NOTICES.md','README.md','SECURITY.md']:
@@ -50,7 +50,7 @@ def main():
             shutil.copytree(ROOT/directory,stage/directory)
         # Repository links become package-root-relative in the shipped guide.
         semantic_guide=stage/'docs/SEMANTIC_WORKFLOW.md'
-        semantic_guide.write_text(semantic_guide.read_text().replace('../plugins/'+NAME+'/', '../'))
+        semantic_guide.write_text(semantic_guide.read_text(encoding="utf-8").replace('../plugins/'+NAME+'/', '../'))
         binary_hash=hashlib.sha256(binary.read_bytes()).hexdigest()
         (stage/'binary.sha256').write_text(f'{binary_hash}  bin/{executable}\n')
         (stage/'build-info.json').write_text(json.dumps({'version':version,'target':args.target,'source_commit':commit,'compiler':compiler,'binary_sha256':binary_hash},indent=2)+'\n')

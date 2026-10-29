@@ -38,17 +38,17 @@ def validate(value, schema, document):
         assert value >= schema['minimum']
 
 def check(binary=None):
-    package = tomllib.loads((ROOT/'Cargo.toml').read_text())['package']
-    portable = json.loads((PLUGIN/'plugin.json').read_text())
-    legacy = json.loads((PLUGIN/'.codex-plugin/plugin.json').read_text())
+    package = tomllib.loads((ROOT/'Cargo.toml').read_text(encoding="utf-8"))['package']
+    portable = json.loads((PLUGIN/'plugin.json').read_text(encoding="utf-8"))
+    legacy = json.loads((PLUGIN/'.codex-plugin/plugin.json').read_text(encoding="utf-8"))
     assert portable['$schema'] == 'https://agent-plugins.org/schemas/1.0.0/plugin.schema.json'
     assert portable['name'] == legacy['name'] == PLUGIN.name == package['name']
     assert portable['version'] == legacy['version'] == package['version']
     ui = portable['extensions']['com.openai']['interface']
     assert ui == legacy['interface'] and len(ui['shortDescription']) <= 30
     assert isinstance(ui['capabilities'], list) and ui['category'] == 'Productivity'
-    new_mcp = json.loads((PLUGIN/'mcp.json').read_text())
-    old_mcp = json.loads((PLUGIN/'.mcp.json').read_text())
+    new_mcp = json.loads((PLUGIN/'mcp.json').read_text(encoding="utf-8"))
+    old_mcp = json.loads((PLUGIN/'.mcp.json').read_text(encoding="utf-8"))
     assert new_mcp['$schema'] == 'https://agent-plugins.org/schemas/1.0.0/mcp.schema.json'
     server = new_mcp['mcpServers']['code-structure-inspector'].copy()
     assert server.pop('type') == 'stdio'
@@ -56,19 +56,19 @@ def check(binary=None):
     assert server['command'] == './bin/code-structure-inspector' and server['args'] == ['mcp']
     assert server['cwd'] == '${PLUGIN_ROOT}' and '${' not in server['command']
     skill = PLUGIN/'skills/inspect-code-structure'
-    assert (skill/'SKILL.md').read_text().startswith('---\nname: inspect-code-structure\n')
-    assert 'allow_implicit_invocation: false' in (skill/'agents/openai.yaml').read_text()
-    workflow=(skill/'SKILL.md').read_text()
+    assert (skill/'SKILL.md').read_text(encoding="utf-8").startswith('---\nname: inspect-code-structure\n')
+    assert 'allow_implicit_invocation: false' in (skill/'agents/openai.yaml').read_text(encoding="utf-8")
+    workflow=(skill/'SKILL.md').read_text(encoding="utf-8")
     for reference in ['source-evidence.md','acceptance.md']:
         assert ('references/'+reference) in workflow
-        text=(skill/'references'/reference).read_text()
+        text=(skill/'references'/reference).read_text(encoding="utf-8")
         assert len(text)>500
     assert 'Codex GPT' in workflow and 'native visualize' in workflow
     assert not any(p.is_symlink() for p in PLUGIN.rglob('*'))
     for p in PLUGIN.rglob('*.json'):
-        json.loads(p.read_text())
+        json.loads(p.read_text(encoding="utf-8"))
     if binary:
-        schema = json.loads((ROOT/'schemas/report-v1.schema.json').read_text())
+        schema = json.loads((ROOT/'schemas/report-v1.schema.json').read_text(encoding="utf-8"))
         fixture = ROOT/'tests/fixtures'
         report = json.loads(subprocess.check_output([str(binary),'inspect',str(fixture)], text=True, timeout=15))
         validate(report, schema, schema)
@@ -84,7 +84,7 @@ def check(binary=None):
         }.items():
             assert expected <= witnesses[path], ('Missing release declaration witnesses',path)
         semantics=json.loads(subprocess.check_output([str(binary),'inspect',str(ROOT/'tests/semantic-fixtures')], text=True, timeout=15))
-        contract=json.loads((ROOT/'tests/semantic_contract.json').read_text())
+        contract=json.loads((ROOT/'tests/semantic_contract.json').read_text(encoding="utf-8"))
         validate(semantics,schema,schema)
         assert semantics['dependencies']==contract['import_facts']
         for selected in contract['selections']:
@@ -112,7 +112,7 @@ def check_packaged_launch(stage):
         relative=Path('skills/inspect-code-structure')/reference
         assert (stage/relative).read_bytes()==(PLUGIN/relative).read_bytes()
     for filename in ['mcp.json','.mcp.json']:
-        doc=json.loads((stage/filename).read_text())
+        doc=json.loads((stage/filename).read_text(encoding="utf-8"))
         server=doc['mcpServers']['code-structure-inspector']
         command=server['command']
         assert command.startswith('./bin/') and '${' not in command
