@@ -16,8 +16,15 @@ The host-bundled Plugin Creator uses a personal marketplace at
 }
 ```
 
-The host's path convention resolves this entry to
-`~/plugins/code-structure-inspector/`. Preserve marketplace identity, displayName,
+The host's path convention resolves this entry relative to the marketplace root,
+not the directory containing marketplace.json. For the implicit personal
+marketplace, the root is the user's home directory, so it resolves to
+`~/plugins/code-structure-inspector/`. Verify the active root with
+`codex plugin marketplace list --json` and the resolved source with
+`codex plugin list --available --json --marketplace personal-local` before install.
+The existing Git plugin on this host confirms that home-root resolution.
+`~/.agents/plugins/plugins/code-structure-inspector/` is a different path and does
+not match the entry above. Preserve marketplace identity, displayName,
 all existing entries and their ordering. Append once, avoid duplicate identities,
 and coordinate simultaneous plugin work before touching shared configuration.
 Never overwrite an existing plugin without reviewing its identity and version.

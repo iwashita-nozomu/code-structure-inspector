@@ -77,7 +77,7 @@ dependencies = [
 
 [[package]]
 name = "code-structure-inspector"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "cap-fs-ext",
  "cap-std",

@@ -184,6 +184,8 @@ fn declaration_name<'a>(mut node: Node<'_>, source: &'a str) -> Option<&'a str> 
         } else if matches!(
             node.kind(),
             "identifier"
+                | "type_identifier"
+                | "namespace_identifier"
                 | "field_identifier"
                 | "qualified_identifier"
                 | "operator_name"
