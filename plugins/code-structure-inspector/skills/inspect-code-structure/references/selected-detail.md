@@ -8,9 +8,10 @@ invocation and a button do not grant new tool or source-read permissions.
 
 ## Capability prerequisites are independent
 
-The actual execution context needs enabled local Codex stdio MCP and authorized
-source reads. Visualization and the follow-up bridge are separate capabilities.
-Normal ChatGPT Chat (including Mac Chat) has not been verified. Viewing the same
+The intended target is Codex Work with enabled local stdio MCP and authorized
+source reads, with real-host acceptance still pending. Visualization and the follow-up bridge are separate capabilities.
+This package's local marketplace/stdio exposure in normal ChatGPT Chat (including
+Mac Chat) has not been verified; that does not rule out future host support. Viewing the same
 conversation on Windows does not run or transfer the Mac MCP process; neither a
 device name nor Work mode alone establishes local tools, source access or a host
 bridge. Check the tools actually exposed to this turn. If absent, report the gap
@@ -77,8 +78,11 @@ Only the explicit **詳しく聞く** action calls feature-detected
 activation. The helper serializes view ID, node/edge ID, claim/evidence IDs and
 every selected file/range/full content revision into the question. It sends no
 source snippets, comments, inferred instruction, absolute root or private value.
-A resolved Promise means a host confirmation was requested, not that the user
-approved it, the message arrived, evidence was read or the answer was rendered.
+A component API or bundled Skill documenting this method does not establish its
+exposure in a native Visualize fragment. Detect it in the actual fragment and
+keep the copy fallback. A resolved Promise means only that the invocation returned;
+it does not prove a confirmation exists, sending/approval/arrival, evidence read
+or answer rendering.
 Never automate a host confirmation or an app UI.
 
 When the question arrives, match all references to the conversation's authorized
@@ -131,5 +135,6 @@ automation. Check readable in-figure meanings/references at 320/768/1024 px and
 light/dark only through an authorized QA route.
 
 Reference pattern: [Git inspector selection helper](https://github.com/iwashita-nozomu/github-work-inspector/blob/6ccb4f19a3de701f889d8d8c7824c431d110ec5e/.agents/skills/github-work-inspector/references/review-selection.js)
-(MIT, same project author). The bundled visualize 1.0.66 composition contract
-documents `sendFollowUpMessage({prompt,title})`; its widget state is best-effort.
+(MIT, same project author). The bundled visualize 1.0.66 composition text documents
+`sendFollowUpMessage({prompt,title})`, but native-fragment exposure is unverified;
+its widget state is best-effort.

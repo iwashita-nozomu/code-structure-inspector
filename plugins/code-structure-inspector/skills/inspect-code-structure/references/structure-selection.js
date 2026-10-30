@@ -83,7 +83,7 @@
         pending = true;
         // Directly from the explicit button's user activation, before first await.
         await host.sendFollowUpMessage({ prompt, title: '選択したコードの根拠を詳しく確認' });
-        return { status: 'host_confirmation_requested', prompt };
+        return { status: 'host_request_returned', prompt };
       } catch (_) { return { status: 'manual', prompt }; }
       finally { pending = false; }
     }
@@ -115,7 +115,7 @@
       // A reply for an earlier click must not replace the new selection's details.
       if (controller.selected()?.id !== requested) return;
       fallback.hidden = result.status !== 'manual'; fallback.value = result.prompt || '';
-      status.textContent = result.status === 'manual' ? '自動送信できません。下の参照付き質問をコピーして会話へ貼り付けてください。' : result.status === 'host_confirmation_requested' ? 'ホストへ確認を依頼しました。承認・会話への到着・根拠取得は未確認です。' : '対象を選択してください。';
+      status.textContent = result.status === 'manual' ? '自動送信できません。下の参照付き質問をコピーして会話へ貼り付けてください。' : result.status === 'host_request_returned' ? 'ホスト連携の呼び出しが戻りました。確認・送信・会話への到着・根拠取得は未確認です。' : '対象を選択してください。';
     });
     if (typeof root.addEventListener === 'function') root.addEventListener('openai:set_globals', (event) => {
       if (event.detail?.globals && Object.hasOwn(event.detail.globals, 'widgetState')) {

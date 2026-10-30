@@ -10,14 +10,20 @@ The workflow is bundled in
 [the Skill](../plugins/code-structure-inspector/skills/inspect-code-structure/SKILL.md),
 with a [source-selection boundary](../plugins/code-structure-inspector/skills/inspect-code-structure/references/source-evidence.md)
 and [user-facing acceptance example](../plugins/code-structure-inspector/skills/inspect-code-structure/references/acceptance.md).
-The execution host must actually expose enabled local stdio MCP tools and
+The intended target is Codex Work; the execution host must actually expose
+enabled local stdio MCP tools and
 permitted source reads. Native visualization and its optional follow-up bridge
-are independent. Ordinary ChatGPT Chat, including Mac Chat, is unverified; a
+are independent. This package's local marketplace/stdio exposure in ordinary
+ChatGPT Chat, including Mac Chat, is unverified (not permanently ruled out); a
 Windows conversation viewer does not execute the Mac plugin. Check available
 tools instead of inferring execution from OS, a displayed conversation or a Work
 label. Missing execution/source evidence gets a labeled capability gap and only
 an already-supported fallback, without CLI or another-plugin bypass. A copied
-question alone cannot provide missing local tools.
+question alone cannot provide missing local tools. A component API or bundled
+Skill documenting sendFollowUpMessage does not prove native-fragment exposure;
+feature-detect it there and use copy fallback when unavailable. Its return does
+not establish confirmation, sending or arrival. Real-host Work acceptance is also
+still pending.
 
 A brief **「このレポを見て」** with this plugin explicitly selected starts
 [an in-figure overview then explicit selected detail](../plugins/code-structure-inspector/skills/inspect-code-structure/references/selected-detail.md).

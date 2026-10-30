@@ -219,6 +219,8 @@
     "native_visualize": "optional_with_labeled_fallback",
     "sendFollowUpMessage": "optional_with_copyable_question",
     "ordinary_chat_support": "unverified",
-    "cross_client_view_transfers_execution": false
+    "cross_client_view_transfers_execution": false,
+    "intended_execution_target": "Codex Work with enabled local stdio MCP and authorized source reads",
+    "native_fragment_bridge_exposure_verified": false
   }
 }

@@ -29,6 +29,7 @@ test('brief-input fixture has in-figure meanings and exact machine revisions bef
   assert.equal(fixture.cases[3].mode, 'report_missing_execution_capabilities_before_read');
   assert.equal(fixture.host_prerequisites.ordinary_chat_support, 'unverified');
   assert.equal(fixture.host_prerequisites.cross_client_view_transfers_execution, false);
+  assert.equal(fixture.host_prerequisites.native_fragment_bridge_exposure_verified, false);
   assert.equal(fixture.live_host_GPT_or_click_proven, false);
   assert.deepEqual(view.files.map((f) => ({ ...f })), report.files.map((f, i) => ({ file_index: i, path: f.path, content_revision: f.content_revision, lines: f.lines })));
   const calls = [], states = [];
@@ -60,7 +61,7 @@ test('only explicit ask carries the selected node or edge with full immutable ev
     c.select(id); assert.equal(calls.length, 0); assert.equal(states.length, 1);
     const pending = c.ask();
     assert.equal(calls.length, 1, 'bridge is invoked directly before first await');
-    const result = await pending; assert.equal(result.status, 'host_confirmation_requested');
+    const result = await pending; assert.equal(result.status, 'host_request_returned');
     const data = JSON.parse(calls[0].prompt.split('\n').at(-1));
     assert.equal(data.view_id, view.view_id); assert.deepEqual(data.selection, copy(c.targets.find((t) => t.id === id)));
     assert.ok(data.selection.anchors.every((a) => /^sha256:[a-f0-9]{64}$/.test(a.content_revision)));

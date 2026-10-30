@@ -10,18 +10,22 @@ Use the user's language.
 
 ## Check the current execution host first
 
-This package requires the existing **local Codex stdio MCP** connection and
-permitted source access for its authorized root. Confirm `inspect_repository`
-actually exists/is allowed in this execution context before reading. Native
-visualize and `sendFollowUpMessage` are independent optional host capabilities.
-Ordinary ChatGPT Chat, including Mac Chat, is **unverified**. A Windows viewer of
-a Mac conversation supplies no Mac tools/execution; an OS or Work label alone
-is not capability evidence. Do not promise ordinary Chat support or shared local
-files/authentication across clients. Missing local MCP means only already available
-evidence can be used. If MCP is available but source access is absent, permitted
-structural facts may still be inspected; label meanings unconfirmed. A manual question
-cannot supply missing execution. Do not call CLI/another plugin to bypass an
-unavailable or unapproved MCP tool, install anything or widen permissions.
+Target **Codex Work with enabled local stdio MCP and permitted source reads**;
+the new interactive flow remains unverified in a real host. Confirm the actual
+`inspect_repository` capability/approval before reading; a Work label alone is
+insufficient. Native visualization is separate from local MCP. This package's
+marketplace/stdio exposure in ordinary ChatGPT Chat (including Mac Chat) is
+unverified, not ruled out permanently. A Windows viewer of a Mac conversation
+supplies no Mac execution. Do not infer shared files/authentication across clients.
+
+The component API/bundled Skill documenting `sendFollowUpMessage` does not prove
+availability inside a native Visualize fragment. Feature-detect there; absent or
+rejected support gets the exact manual-copy question. An API return proves no
+confirmation, sending or arrival. Missing local MCP means only already available
+evidence can be used. If MCP works but source access is absent, permitted structural
+facts may be inspected with meanings unconfirmed. A copied question supplies no
+missing capability. Do not bypass unavailable/unapproved tools through CLI or
+another plugin, install anything or widen permissions.
 
 ## Default: overview → selected detail
 
