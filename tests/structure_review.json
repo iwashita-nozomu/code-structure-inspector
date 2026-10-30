@@ -18,6 +18,15 @@
       "plugin_explicitly_selected": true,
       "scope": "ambiguous",
       "mode": "clarify_before_read"
+    },
+    {
+      "input": "このレポを見て",
+      "plugin_explicitly_selected": true,
+      "scope": "authorized_current_repository",
+      "execution_capabilities": [
+        "visualize_only"
+      ],
+      "mode": "report_missing_execution_capabilities_before_read"
     }
   ],
   "view": {
@@ -203,5 +212,13 @@
     "automatic_detail_reads": 0,
     "automatic_followups": 0
   },
-  "live_host_GPT_or_click_proven": false
+  "live_host_GPT_or_click_proven": false,
+  "host_prerequisites": {
+    "local_stdio_mcp": "required_enabled_in_current_execution_context",
+    "source_read": "required_for_confirmed_meaning",
+    "native_visualize": "optional_with_labeled_fallback",
+    "sendFollowUpMessage": "optional_with_copyable_question",
+    "ordinary_chat_support": "unverified",
+    "cross_client_view_transfers_execution": false
+  }
 }

@@ -22,6 +22,18 @@ interpretations for Codex to support with declaration and source evidence. No
 compiler, build, import, shell, compile database, renderer or repository-provided
 command is run. See [analysis limits](docs/ANALYSIS.md) before drawing conclusions.
 
+This is a **local Codex stdio MCP plugin**. The current execution host must expose
+its enabled MCP tools and an authorized source-reading capability. Native visualize
+and `sendFollowUpMessage` are separate, feature-detected capabilities. Ordinary
+ChatGPT Chat support (including Mac Chat) is unverified; do not infer it from a
+conversation view or a device name. Viewing a Mac conversation on Windows does not
+move or invoke the Mac's local MCP process. A Work label alone also does not prove
+these capabilities. Check the actual execution surface and existing permissions.
+If local MCP is absent, report the gap and use only already available evidence
+for a labeled fallback. If MCP works but source reads are unavailable, permitted
+structural observations may still be shown with responsibility/impact unconfirmed.
+A copyable question does not provide missing MCP execution. Do not bypass this through CLI or another tool.
+
 With the plugin explicitly selected, 「このレポを見て」 defaults to short roles,
 dependency reasons and conditional impact inside the native figure. Select a node
 or edge, then use 詳しく聞く to pass its file/range/content-revision references

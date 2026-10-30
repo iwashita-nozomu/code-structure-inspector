@@ -6,6 +6,20 @@ the root before reading. Do not require a longer visualization prompt. Respect
 「一覧だけ」/「図だけ」/「詳細不要」 and other narrower user instructions. Explicit
 invocation and a button do not grant new tool or source-read permissions.
 
+## Capability prerequisites are independent
+
+The actual execution context needs enabled local Codex stdio MCP and authorized
+source reads. Visualization and the follow-up bridge are separate capabilities.
+Normal ChatGPT Chat (including Mac Chat) has not been verified. Viewing the same
+conversation on Windows does not run or transfer the Mac MCP process; neither a
+device name nor Work mode alone establishes local tools, source access or a host
+bridge. Check the tools actually exposed to this turn. If absent, report the gap
+and use only already available evidence for static/text fallback. Available MCP
+without source reads can still supply permitted structural facts, with meanings
+unconfirmed. Never fabricate
+revision references, imply a copyable question restores execution, or bypass the
+missing/denied tool through CLI or another plugin.
+
 ## First: concise meaning and evidence inside the figure
 
 Use the normal bounded inspect + selected source workflow (4 files / 240 lines,

@@ -10,6 +10,15 @@ The workflow is bundled in
 [the Skill](../plugins/code-structure-inspector/skills/inspect-code-structure/SKILL.md),
 with a [source-selection boundary](../plugins/code-structure-inspector/skills/inspect-code-structure/references/source-evidence.md)
 and [user-facing acceptance example](../plugins/code-structure-inspector/skills/inspect-code-structure/references/acceptance.md).
+The execution host must actually expose enabled local stdio MCP tools and
+permitted source reads. Native visualization and its optional follow-up bridge
+are independent. Ordinary ChatGPT Chat, including Mac Chat, is unverified; a
+Windows conversation viewer does not execute the Mac plugin. Check available
+tools instead of inferring execution from OS, a displayed conversation or a Work
+label. Missing execution/source evidence gets a labeled capability gap and only
+an already-supported fallback, without CLI or another-plugin bypass. A copied
+question alone cannot provide missing local tools.
+
 A brief **「このレポを見て」** with this plugin explicitly selected starts
 [an in-figure overview then explicit selected detail](../plugins/code-structure-inspector/skills/inspect-code-structure/references/selected-detail.md).
 The figure contains short responsibility, dependency-reason and conditional-impact

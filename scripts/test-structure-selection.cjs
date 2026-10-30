@@ -26,6 +26,9 @@ test('brief-input fixture has in-figure meanings and exact machine revisions bef
   assert.equal(fixture.cases[0].mode, 'in_figure_overview_then_explicit_selected_detail');
   assert.equal(fixture.cases[1].mode, 'facts_only');
   assert.equal(fixture.cases[2].mode, 'clarify_before_read');
+  assert.equal(fixture.cases[3].mode, 'report_missing_execution_capabilities_before_read');
+  assert.equal(fixture.host_prerequisites.ordinary_chat_support, 'unverified');
+  assert.equal(fixture.host_prerequisites.cross_client_view_transfers_execution, false);
   assert.equal(fixture.live_host_GPT_or_click_proven, false);
   assert.deepEqual(view.files.map((f) => ({ ...f })), report.files.map((f, i) => ({ file_index: i, path: f.path, content_revision: f.content_revision, lines: f.lines })));
   const calls = [], states = [];

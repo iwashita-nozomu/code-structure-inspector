@@ -54,6 +54,9 @@ fn stdio_handshake_tools_calls_and_notification_framing() {
         "sendFollowUpMessage({prompt,title})",
         "content_revision",
         "not runtime calls",
+        "local stdio MCP",
+        "Ordinary ChatGPT Chat",
+        "host capability",
     ] {
         assert!(guidance.contains(contract));
     }

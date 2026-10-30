@@ -8,6 +8,21 @@ structure; **Codex GPT performs the semantic reasoning**. Do not finish with a
 raw graph, file inventory, JSON dump or directory-name responsibility template.
 Use the user's language.
 
+## Check the current execution host first
+
+This package requires the existing **local Codex stdio MCP** connection and
+permitted source access for its authorized root. Confirm `inspect_repository`
+actually exists/is allowed in this execution context before reading. Native
+visualize and `sendFollowUpMessage` are independent optional host capabilities.
+Ordinary ChatGPT Chat, including Mac Chat, is **unverified**. A Windows viewer of
+a Mac conversation supplies no Mac tools/execution; an OS or Work label alone
+is not capability evidence. Do not promise ordinary Chat support or shared local
+files/authentication across clients. Missing local MCP means only already available
+evidence can be used. If MCP is available but source access is absent, permitted
+structural facts may still be inspected; label meanings unconfirmed. A manual question
+cannot supply missing execution. Do not call CLI/another plugin to bypass an
+unavailable or unapproved MCP tool, install anything or widen permissions.
+
 ## Default: overview → selected detail
 
 When explicitly selected, **「このレポを見て」** uses the current authorized root
