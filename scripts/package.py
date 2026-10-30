@@ -50,7 +50,7 @@ def main():
             shutil.copytree(ROOT/directory,stage/directory)
         # Repository links become package-root-relative in the shipped guide.
         semantic_guide=stage/'docs/SEMANTIC_WORKFLOW.md'
-        semantic_guide.write_text(semantic_guide.read_text(encoding="utf-8").replace('../plugins/'+NAME+'/', '../'))
+        semantic_guide.write_text(semantic_guide.read_text(encoding="utf-8").replace('../plugins/'+NAME+'/', '../'),encoding="utf-8")
         binary_hash=hashlib.sha256(binary.read_bytes()).hexdigest()
         (stage/'binary.sha256').write_text(f'{binary_hash}  bin/{executable}\n')
         (stage/'build-info.json').write_text(json.dumps({'version':version,'target':args.target,'source_commit':commit,'compiler':compiler,'binary_sha256':binary_hash},indent=2)+'\n')

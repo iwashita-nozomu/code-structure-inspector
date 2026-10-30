@@ -74,10 +74,10 @@ def check(binary=None):
     if binary:
         schema = json.loads((ROOT/'schemas/report-v1.schema.json').read_text(encoding="utf-8"))
         fixture = ROOT/'tests/fixtures'
-        report = json.loads(subprocess.check_output([str(binary),'inspect',str(fixture)], text=True, timeout=15))
+        report = json.loads(subprocess.check_output([str(binary),'inspect',str(fixture)], text=True,encoding="utf-8", timeout=15))
         validate(report, schema, schema)
         assert report['coverage']['syntax_error_files'] <= 1  # CUDA uses C++ fallback.
-        declarations = json.loads(subprocess.check_output([str(binary),'inspect',str(ROOT/'tests/declaration-fixtures')], text=True, timeout=15))
+        declarations = json.loads(subprocess.check_output([str(binary),'inspect',str(ROOT/'tests/declaration-fixtures')], text=True,encoding="utf-8", timeout=15))
         validate(declarations, schema, schema)
         witnesses = {file['path']: {(s['name'],s['kind'],s['start_line'],s['end_line']) for s in file['symbols']} for file in declarations['files']}
         for path, expected in {
@@ -87,7 +87,7 @@ def check(binary=None):
             'boundaries.py': {('Experiment','class_definition',1,3),('run','function_definition',2,3)},
         }.items():
             assert expected <= witnesses[path], ('Missing release declaration witnesses',path)
-        semantics=json.loads(subprocess.check_output([str(binary),'inspect',str(ROOT/'tests/semantic-fixtures')], text=True, timeout=15))
+        semantics=json.loads(subprocess.check_output([str(binary),'inspect',str(ROOT/'tests/semantic-fixtures')], text=True,encoding="utf-8", timeout=15))
         contract=json.loads((ROOT/'tests/semantic_contract.json').read_text(encoding="utf-8"))
         validate(semantics,schema,schema)
         assert semantics['dependencies']==contract['import_facts']
@@ -104,9 +104,10 @@ def check(binary=None):
             {'jsonrpc':'2.0','id':2,'method':'tools/list'},
             {'jsonrpc':'2.0','id':3,'method':'tools/call','params':{'name':'inspect_repository','arguments':{'root':str(fixture)}}},
         ]
-        out = subprocess.run([str(binary),'mcp'],input=''.join(json.dumps(r)+'\n' for r in requests), text=True,capture_output=True,check=True,timeout=20)
+        out = subprocess.run([str(binary),'mcp'],input=''.join(json.dumps(r)+'\n' for r in requests), text=True,encoding="utf-8",capture_output=True,check=True,timeout=20)
         messages = [json.loads(line) for line in out.stdout.splitlines()]
         assert not out.stderr and len(messages) == 3
+        assert 'このレポを見て' in messages[0]['result']['instructions']
         assert [t['name'] for t in messages[1]['result']['tools']] == ['inspect_repository','related_files']
         result = messages[2]['result']
         assert result['isError'] is False
@@ -131,9 +132,10 @@ def check_packaged_launch(stage):
             {'jsonrpc':'2.0','method':'notifications/initialized'},
             {'jsonrpc':'2.0','id':2,'method':'tools/list'},
         ]
-        out=subprocess.run([str(resolved),*server['args']],cwd=stage,input=''.join(json.dumps(r)+'\n' for r in requests),text=True,capture_output=True,check=True,timeout=20)
+        out=subprocess.run([str(resolved),*server['args']],cwd=stage,input=''.join(json.dumps(r)+'\n' for r in requests),text=True,encoding="utf-8",capture_output=True,check=True,timeout=20)
         messages=[json.loads(line) for line in out.stdout.splitlines()]
         assert not out.stderr and len(messages)==2
+        assert 'このレポを見て' in messages[0]['result']['instructions']
         assert [t['name'] for t in messages[1]['result']['tools']]==['inspect_repository','related_files']
     print(json.dumps({'packaged_manifest_launch':'verified','host_discovery':'separate installation check required'}))
 
