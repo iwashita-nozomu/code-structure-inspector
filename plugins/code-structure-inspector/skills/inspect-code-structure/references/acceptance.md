@@ -51,6 +51,20 @@ visualize, while a small static graph may be routed to Mermaid.
   show the import facts only. If native visualize is unavailable, label the
   Mermaid/text fallback. A raw Mermaid/JSON dump without explanation is a failure.
 
+## Focused follow-up acceptance
+
+User: "検証変更の影響だけ、まだ未確認と分かる表現に直して。"
+
+Keep the response-local panel ID `impact` even when its title changes. Do not
+renumber `responsibilities` or `dependencies` when sections move. Preserve their
+claims, node IDs and source witnesses. Refine only the candidate-impact wording
+and uncertainty supported by the same evidence. The prose and figure details must
+use the same claim/citation IDs. See [figure plan](figure-contract.md).
+
+The host may rerender the whole visual from that small updated plan; this example
+does not assert that Chat/Work supports DOM panel patching. Actual native display
+and follow-up behavior need their own QA.
+
 ## Acceptance checks and limits
 
 The automated fixtures check that the machine facts, selected declaration ranges,

@@ -59,7 +59,7 @@ def check(binary=None):
     assert (skill/'SKILL.md').read_text(encoding="utf-8").startswith('---\nname: inspect-code-structure\n')
     assert 'allow_implicit_invocation: false' in (skill/'agents/openai.yaml').read_text(encoding="utf-8")
     workflow=(skill/'SKILL.md').read_text(encoding="utf-8")
-    for reference in ['source-evidence.md','acceptance.md']:
+    for reference in ['source-evidence.md','acceptance.md','figure-contract.md']:
         assert ('references/'+reference) in workflow
         text=(skill/'references'/reference).read_text(encoding="utf-8")
         assert len(text)>500
@@ -108,7 +108,7 @@ def check(binary=None):
 
 def check_packaged_launch(stage):
     stage=stage.resolve()
-    for reference in ['SKILL.md','references/source-evidence.md','references/acceptance.md']:
+    for reference in ['SKILL.md','references/source-evidence.md','references/acceptance.md','references/figure-contract.md']:
         relative=Path('skills/inspect-code-structure')/reference
         assert (stage/relative).read_bytes()==(PLUGIN/relative).read_bytes()
     for filename in ['mcp.json','.mcp.json']:
