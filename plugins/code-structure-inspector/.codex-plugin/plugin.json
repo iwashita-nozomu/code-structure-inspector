@@ -1,6 +1,6 @@
 {
   "name": "code-structure-inspector",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "Read-only code evidence and a Codex GPT workflow for source-backed responsibilities, dependency meaning and native visualization.",
   "author": {
     "name": "iwashita-nozomu",
