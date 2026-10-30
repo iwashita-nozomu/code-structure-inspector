@@ -39,6 +39,7 @@ jobs:
       - run: cargo fmt --check
       - run: cargo clippy --locked --all-targets --offline -- -D warnings
       - run: cargo test --locked --offline
+      - run: node --test scripts/test-structure-selection.cjs
       - run: cargo build --locked --release --offline
       - run: python scripts/licenses.py --check
       - run: python scripts/check_package.py --binary ${{ matrix.binary }}

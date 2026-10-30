@@ -15,15 +15,21 @@ https://github.com/tree-sitter/tree-sitter-cpp/blob/f41e1a044c8a84ea9fa8577fdd2e
 | aho-corasick | 1.1.5 | Unlicense OR MIT | [files](third-party/crates/aho-corasick-1.1.5/) |
 | ambient-authority | 0.0.2 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | [files](third-party/crates/ambient-authority-0.0.2/) |
 | bitflags | 2.13.2 | MIT OR Apache-2.0 | [files](third-party/crates/bitflags-2.13.2/) |
+| block-buffer | 0.10.4 | MIT OR Apache-2.0 | [files](third-party/crates/block-buffer-0.10.4/) |
 | cap-fs-ext | 4.0.3 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | [files](third-party/crates/cap-fs-ext-4.0.3/) |
 | cap-primitives | 4.0.3 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | [files](third-party/crates/cap-primitives-4.0.3/) |
 | cap-std | 4.0.3 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | [files](third-party/crates/cap-std-4.0.3/) |
 | cc | 1.10.0 | MIT OR Apache-2.0 | [files](third-party/crates/cc-1.10.0/) |
+| cfg-if | 1.0.5 | MIT OR Apache-2.0 | [files](third-party/crates/cfg-if-1.0.5/) |
+| cpufeatures | 0.2.17 | MIT OR Apache-2.0 | [files](third-party/crates/cpufeatures-0.2.17/) |
+| crypto-common | 0.1.7 | MIT OR Apache-2.0 | [files](third-party/crates/crypto-common-0.1.7/) |
+| digest | 0.10.7 | MIT OR Apache-2.0 | [files](third-party/crates/digest-0.10.7/) |
 | equivalent | 1.0.3 | Apache-2.0 OR MIT | [files](third-party/crates/equivalent-1.0.3/) |
 | errno | 0.3.14 | MIT OR Apache-2.0 | [files](third-party/crates/errno-0.3.14/) |
 | find-msvc-tools | 0.1.15 | MIT OR Apache-2.0 | [files](third-party/crates/find-msvc-tools-0.1.15/) |
 | foldhash | 0.2.0 | Zlib | [files](third-party/crates/foldhash-0.2.0/) |
 | fs-set-times | 0.20.3 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | [files](third-party/crates/fs-set-times-0.20.3/) |
+| generic-array | 0.14.7 | MIT | [files](third-party/crates/generic-array-0.14.7/) |
 | hashbrown | 0.17.1 | MIT OR Apache-2.0 | [files](third-party/crates/hashbrown-0.17.1/) |
 | indexmap | 2.14.2 | Apache-2.0 OR MIT | [files](third-party/crates/indexmap-2.14.2/) |
 | io-extras | 0.19.0 | Apache-2.0 WITH LLVM-exception OR Apache-2.0 OR MIT | [files](third-party/crates/io-extras-0.19.0/) |
@@ -48,6 +54,7 @@ https://github.com/tree-sitter/tree-sitter-cpp/blob/f41e1a044c8a84ea9fa8577fdd2e
 | serde_derive | 1.0.229 | MIT OR Apache-2.0 | [files](third-party/crates/serde_derive-1.0.229/) |
 | serde_json | 1.0.154 | MIT OR Apache-2.0 | [files](third-party/crates/serde_json-1.0.154/) |
 | serde_spanned | 1.1.2 | MIT OR Apache-2.0 | [files](third-party/crates/serde_spanned-1.1.2/) |
+| sha2 | 0.10.9 | MIT OR Apache-2.0 | [files](third-party/crates/sha2-0.10.9/) |
 | shlex | 2.0.1 | MIT OR Apache-2.0 | [files](third-party/crates/shlex-2.0.1/) |
 | streaming-iterator | 0.1.9 | MIT OR Apache-2.0 | [files](third-party/crates/streaming-iterator-0.1.9/) |
 | syn | 3.0.9 | MIT OR Apache-2.0 | [files](third-party/crates/syn-3.0.9/) |
@@ -60,7 +67,9 @@ https://github.com/tree-sitter/tree-sitter-cpp/blob/f41e1a044c8a84ea9fa8577fdd2e
 | tree-sitter-language | 0.1.9 | MIT | [files](third-party/crates/tree-sitter-language-0.1.9/) |
 | tree-sitter-python | 0.25.0 | MIT | [files](third-party/crates/tree-sitter-python-0.25.0/) |
 | tree-sitter-rust | 0.24.2 | MIT | [files](third-party/crates/tree-sitter-rust-0.24.2/) |
+| typenum | 1.20.1 | MIT OR Apache-2.0 | [files](third-party/crates/typenum-1.20.1/) |
 | unicode-ident | 1.0.27 | (MIT OR Apache-2.0) AND Unicode-3.0 | [files](third-party/crates/unicode-ident-1.0.27/) |
+| version_check | 0.9.5 | MIT/Apache-2.0 | [files](third-party/crates/version_check-0.9.5/) |
 | windows-link | 0.2.1 | MIT OR Apache-2.0 | [files](third-party/crates/windows-link-0.2.1/) |
 | windows-sys | 0.59.0 | MIT OR Apache-2.0 | [files](third-party/crates/windows-sys-0.59.0/) |
 | windows-sys | 0.60.2 | MIT OR Apache-2.0 | [files](third-party/crates/windows-sys-0.60.2/) |

@@ -1,0 +1,226 @@
+{
+  "synthetic_only": true,
+  "cases": [
+    {
+      "input": "このレポを見て",
+      "plugin_explicitly_selected": true,
+      "scope": "authorized_current_repository",
+      "mode": "in_figure_overview_then_explicit_selected_detail"
+    },
+    {
+      "input": "一覧だけ",
+      "plugin_explicitly_selected": true,
+      "scope": "authorized_current_repository",
+      "mode": "facts_only"
+    },
+    {
+      "input": "このレポを見て",
+      "plugin_explicitly_selected": true,
+      "scope": "ambiguous",
+      "mode": "clarify_before_read"
+    },
+    {
+      "input": "このレポを見て",
+      "plugin_explicitly_selected": true,
+      "scope": "authorized_current_repository",
+      "execution_capabilities": [
+        "visualize_only"
+      ],
+      "mode": "report_missing_execution_capabilities_before_read"
+    }
+  ],
+  "view": {
+    "view_id": "synthetic-structure-v1",
+    "files": [
+      {
+        "file_index": 0,
+        "path": "cache.py",
+        "content_revision": "sha256:a7640336fe238e7891525e0ab0739172de6549e82ec6be3348c4795c5831a936",
+        "lines": 5
+      },
+      {
+        "file_index": 1,
+        "path": "renderer.py",
+        "content_revision": "sha256:a014d6cc8899fdf216a1bd2dfe2646788aa8697beaa7f104fd72f9360717d11f",
+        "lines": 5
+      },
+      {
+        "file_index": 2,
+        "path": "train.py",
+        "content_revision": "sha256:8c47973f6ef79f0347ce1a7d8ea2e656f0e5c4f5d31fd086b3be42c614a49cbf",
+        "lines": 8
+      }
+    ],
+    "targets": [
+      {
+        "id": "validator",
+        "kind": "node",
+        "basis": "gpt_interpretation",
+        "claim_ids": [
+          "role-validator"
+        ],
+        "evidence_ids": [
+          "S1"
+        ],
+        "anchors": [
+          {
+            "file_index": 0,
+            "start_line": 1,
+            "end_line": 5
+          }
+        ]
+      },
+      {
+        "id": "reducer",
+        "kind": "node",
+        "basis": "gpt_interpretation",
+        "claim_ids": [
+          "role-reducer"
+        ],
+        "evidence_ids": [
+          "S2"
+        ],
+        "anchors": [
+          {
+            "file_index": 1,
+            "start_line": 1,
+            "end_line": 5
+          }
+        ]
+      },
+      {
+        "id": "coordinator",
+        "kind": "node",
+        "basis": "gpt_interpretation",
+        "claim_ids": [
+          "role-coordinator"
+        ],
+        "evidence_ids": [
+          "S3"
+        ],
+        "anchors": [
+          {
+            "file_index": 2,
+            "start_line": 4,
+            "end_line": 8
+          }
+        ]
+      },
+      {
+        "id": "dep-validator",
+        "kind": "edge",
+        "basis": "layout_candidate",
+        "claim_ids": [
+          "uses-validator"
+        ],
+        "evidence_ids": [
+          "F1",
+          "S1",
+          "S3"
+        ],
+        "anchors": [
+          {
+            "file_index": 2,
+            "start_line": 1,
+            "end_line": 1
+          },
+          {
+            "file_index": 2,
+            "start_line": 4,
+            "end_line": 8
+          },
+          {
+            "file_index": 0,
+            "start_line": 1,
+            "end_line": 5
+          }
+        ]
+      },
+      {
+        "id": "dep-reducer",
+        "kind": "edge",
+        "basis": "layout_candidate",
+        "claim_ids": [
+          "uses-reducer"
+        ],
+        "evidence_ids": [
+          "F2",
+          "S2",
+          "S3"
+        ],
+        "anchors": [
+          {
+            "file_index": 2,
+            "start_line": 2,
+            "end_line": 2
+          },
+          {
+            "file_index": 2,
+            "start_line": 4,
+            "end_line": 8
+          },
+          {
+            "file_index": 1,
+            "start_line": 1,
+            "end_line": 5
+          }
+        ]
+      },
+      {
+        "id": "impact-caller",
+        "kind": "edge",
+        "basis": "gpt_interpretation",
+        "claim_ids": [
+          "impact-validator"
+        ],
+        "evidence_ids": [
+          "S1",
+          "S3"
+        ],
+        "anchors": [
+          {
+            "file_index": 0,
+            "start_line": 1,
+            "end_line": 5
+          },
+          {
+            "file_index": 2,
+            "start_line": 4,
+            "end_line": 8
+          }
+        ]
+      }
+    ]
+  },
+  "overview": {
+    "node_ids": [
+      "validator",
+      "reducer",
+      "coordinator"
+    ],
+    "edge_ids": [
+      "dep-validator",
+      "dep-reducer"
+    ],
+    "impact_id": "impact-caller",
+    "inside_figure": [
+      "responsibility",
+      "dependency_reason",
+      "candidate_impact",
+      "source_reference"
+    ],
+    "automatic_detail_reads": 0,
+    "automatic_followups": 0
+  },
+  "live_host_GPT_or_click_proven": false,
+  "host_prerequisites": {
+    "local_stdio_mcp": "required_enabled_in_current_execution_context",
+    "source_read": "required_for_confirmed_meaning",
+    "native_visualize": "optional_with_labeled_fallback",
+    "sendFollowUpMessage": "optional_with_copyable_question",
+    "ordinary_chat_support": "unverified",
+    "cross_client_view_transfers_execution": false,
+    "intended_execution_target": "Codex Work with enabled local stdio MCP and authorized source reads",
+    "native_fragment_bridge_exposure_verified": false
+  }
+}

@@ -2,6 +2,7 @@
 """Verify manifests, schema contract, stdio discovery and synthetic read without network."""
 import argparse
 import json
+import re
 from pathlib import Path
 import subprocess
 import tomllib
@@ -16,6 +17,8 @@ def validate(value, schema, document):
         return validate(value, resolved, document)
     if 'const' in schema:
         assert value == schema['const']
+    if 'pattern' in schema and isinstance(value, str):
+        assert re.fullmatch(schema['pattern'], value)
     if 'enum' in schema:
         assert value in schema['enum']
     kind = schema.get('type')
@@ -59,10 +62,11 @@ def check(binary=None):
     assert (skill/'SKILL.md').read_text(encoding="utf-8").startswith('---\nname: inspect-code-structure\n')
     assert 'allow_implicit_invocation: false' in (skill/'agents/openai.yaml').read_text(encoding="utf-8")
     workflow=(skill/'SKILL.md').read_text(encoding="utf-8")
-    for reference in ['source-evidence.md','acceptance.md','figure-contract.md']:
+    for reference in ['source-evidence.md','acceptance.md','figure-contract.md','selected-detail.md','structure-selection.js']:
         assert ('references/'+reference) in workflow
         text=(skill/'references'/reference).read_text(encoding="utf-8")
         assert len(text)>500
+    assert 'このレポを見て' in workflow and '詳しく聞く' in workflow and 'sendFollowUpMessage' in workflow
     assert 'Codex GPT' in workflow and 'native visualize' in workflow
     assert not any(p.is_symlink() for p in PLUGIN.rglob('*'))
     for p in PLUGIN.rglob('*.json'):
@@ -70,10 +74,10 @@ def check(binary=None):
     if binary:
         schema = json.loads((ROOT/'schemas/report-v1.schema.json').read_text(encoding="utf-8"))
         fixture = ROOT/'tests/fixtures'
-        report = json.loads(subprocess.check_output([str(binary),'inspect',str(fixture)], text=True, timeout=15))
+        report = json.loads(subprocess.check_output([str(binary),'inspect',str(fixture)], text=True,encoding="utf-8", timeout=15))
         validate(report, schema, schema)
         assert report['coverage']['syntax_error_files'] <= 1  # CUDA uses C++ fallback.
-        declarations = json.loads(subprocess.check_output([str(binary),'inspect',str(ROOT/'tests/declaration-fixtures')], text=True, timeout=15))
+        declarations = json.loads(subprocess.check_output([str(binary),'inspect',str(ROOT/'tests/declaration-fixtures')], text=True,encoding="utf-8", timeout=15))
         validate(declarations, schema, schema)
         witnesses = {file['path']: {(s['name'],s['kind'],s['start_line'],s['end_line']) for s in file['symbols']} for file in declarations['files']}
         for path, expected in {
@@ -83,10 +87,13 @@ def check(binary=None):
             'boundaries.py': {('Experiment','class_definition',1,3),('run','function_definition',2,3)},
         }.items():
             assert expected <= witnesses[path], ('Missing release declaration witnesses',path)
-        semantics=json.loads(subprocess.check_output([str(binary),'inspect',str(ROOT/'tests/semantic-fixtures')], text=True, timeout=15))
+        semantics=json.loads(subprocess.check_output([str(binary),'inspect',str(ROOT/'tests/semantic-fixtures')], text=True,encoding="utf-8", timeout=15))
         contract=json.loads((ROOT/'tests/semantic_contract.json').read_text(encoding="utf-8"))
         validate(semantics,schema,schema)
         assert semantics['dependencies']==contract['import_facts']
+        import hashlib
+        for file in semantics['files']:
+            assert file['content_revision']=='sha256:'+hashlib.sha256((ROOT/'tests/semantic-fixtures'/file['path']).read_bytes()).hexdigest()
         for selected in contract['selections']:
             file=next(f for f in semantics['files'] if f['path']==selected['path'])
             assert any(s['name']==selected['symbol'] and s['start_line']==selected['start_line'] and s['end_line']==selected['end_line'] for s in file['symbols'])
@@ -97,9 +104,10 @@ def check(binary=None):
             {'jsonrpc':'2.0','id':2,'method':'tools/list'},
             {'jsonrpc':'2.0','id':3,'method':'tools/call','params':{'name':'inspect_repository','arguments':{'root':str(fixture)}}},
         ]
-        out = subprocess.run([str(binary),'mcp'],input=''.join(json.dumps(r)+'\n' for r in requests), text=True,capture_output=True,check=True,timeout=20)
+        out = subprocess.run([str(binary),'mcp'],input=''.join(json.dumps(r)+'\n' for r in requests), text=True,encoding="utf-8",capture_output=True,check=True,timeout=20)
         messages = [json.loads(line) for line in out.stdout.splitlines()]
         assert not out.stderr and len(messages) == 3
+        assert 'このレポを見て' in messages[0]['result']['instructions']
         assert [t['name'] for t in messages[1]['result']['tools']] == ['inspect_repository','related_files']
         result = messages[2]['result']
         assert result['isError'] is False
@@ -108,7 +116,7 @@ def check(binary=None):
 
 def check_packaged_launch(stage):
     stage=stage.resolve()
-    for reference in ['SKILL.md','references/source-evidence.md','references/acceptance.md','references/figure-contract.md']:
+    for reference in ['SKILL.md','references/source-evidence.md','references/acceptance.md','references/figure-contract.md','references/selected-detail.md','references/structure-selection.js']:
         relative=Path('skills/inspect-code-structure')/reference
         assert (stage/relative).read_bytes()==(PLUGIN/relative).read_bytes()
     for filename in ['mcp.json','.mcp.json']:
@@ -124,9 +132,10 @@ def check_packaged_launch(stage):
             {'jsonrpc':'2.0','method':'notifications/initialized'},
             {'jsonrpc':'2.0','id':2,'method':'tools/list'},
         ]
-        out=subprocess.run([str(resolved),*server['args']],cwd=stage,input=''.join(json.dumps(r)+'\n' for r in requests),text=True,capture_output=True,check=True,timeout=20)
+        out=subprocess.run([str(resolved),*server['args']],cwd=stage,input=''.join(json.dumps(r)+'\n' for r in requests),text=True,encoding="utf-8",capture_output=True,check=True,timeout=20)
         messages=[json.loads(line) for line in out.stdout.splitlines()]
         assert not out.stderr and len(messages)==2
+        assert 'このレポを見て' in messages[0]['result']['instructions']
         assert [t['name'] for t in messages[1]['result']['tools']]==['inspect_repository','related_files']
     print(json.dumps({'packaged_manifest_launch':'verified','host_discovery':'separate installation check required'}))
 

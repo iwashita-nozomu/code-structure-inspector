@@ -47,6 +47,19 @@ fn stdio_handshake_tools_calls_and_notification_framing() {
     assert_eq!(messages.len(), 7);
     assert_eq!(messages[0]["error"]["code"], -32000);
     assert_eq!(messages[1]["result"]["protocolVersion"], "2025-11-25");
+    let guidance = messages[1]["result"]["instructions"].as_str().unwrap();
+    for contract in [
+        "このレポを見て",
+        "詳しく聞く",
+        "sendFollowUpMessage({prompt,title})",
+        "content_revision",
+        "not runtime calls",
+        "local stdio MCP",
+        "Ordinary ChatGPT Chat",
+        "host capability",
+    ] {
+        assert!(guidance.contains(contract));
+    }
     assert_eq!(messages[2]["result"]["tools"].as_array().unwrap().len(), 2);
     assert_eq!(
         messages[2]["result"]["tools"][0]["annotations"]["readOnlyHint"],
@@ -60,6 +73,12 @@ fn stdio_handshake_tools_calls_and_notification_framing() {
     .unwrap();
     assert_eq!(report["schema_version"], 1);
     assert_eq!(report["analysis"], "syntactic_evidence");
+    assert!(report["files"].as_array().unwrap().iter().all(|file| {
+        file["content_revision"]
+            .as_str()
+            .unwrap()
+            .starts_with("sha256:")
+    }));
     assert_eq!(messages[4]["result"]["isError"], false);
     assert_eq!(messages[5]["result"]["isError"], true);
     assert_eq!(messages[6]["result"]["isError"], true);

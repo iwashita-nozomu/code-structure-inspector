@@ -18,8 +18,14 @@ host's existing file view/read capability; no new MCP reader is required.
 - These limits are a selection budget, not permission to widen scope. When more
   evidence is essential, tell the user the missing part and offer a narrower
   selection or obtain authorization before extending the read.
-- If the reported symbol/range no longer matches the file, rerun the bounded
-  inspection. The scan and source view are not an atomic snapshot.
+- `files[].content_revision` is SHA-256 of the exact file bytes used by the parser,
+  not a Git commit or retained source. Use a revision-bound host read, or verify
+  the full-file digest with the same read before selecting lines. Do not substitute
+  an equal-length/newer file. If that check is unavailable, label source unverified.
+- If the revision/symbol/range no longer matches, stop using that selection and
+  offer refreshed evidence. The scan and source view are not an atomic snapshot.
+- After an explicit selected-detail question, add only its registered ranges:
+  at most 2 files / 160 lines / 80 per range. See [selection contract](selected-detail.md).
 
 ## Ground the reasoning
 
