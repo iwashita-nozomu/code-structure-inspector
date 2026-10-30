@@ -10,6 +10,12 @@ The workflow is bundled in
 [the Skill](../plugins/code-structure-inspector/skills/inspect-code-structure/SKILL.md),
 with a [source-selection boundary](../plugins/code-structure-inspector/skills/inspect-code-structure/references/source-evidence.md)
 and [user-facing acceptance example](../plugins/code-structure-inspector/skills/inspect-code-structure/references/acceptance.md).
+A brief **「このレポを見て」** with this plugin explicitly selected starts
+[an in-figure overview then explicit selected detail](../plugins/code-structure-inspector/skills/inspect-code-structure/references/selected-detail.md).
+The figure contains short responsibility, dependency-reason and conditional-impact
+labels with witnesses. Selecting stays local; 詳しく聞く sends exact references
+through the host bridge or provides a manual-copy question. User scope overrides
+this default, and an ambiguous root must be clarified.
 A user's normal request should produce a meaning-first explanation with cited
 relative source ranges, a useful native visualization, and explicit uncertainty.
 The raw machine graph is an input to that answer, not the entire answer.
@@ -25,6 +31,12 @@ Source names/ranges alone cannot establish responsibility. Select up to four
 reported files and 240 lines initially (80 per range) through existing permitted
 host reads. Respect the same root and exclusions. If source access is missing,
 state that meanings are unconfirmed rather than guessing from directory names.
+The Rust report now includes `files[].content_revision` (SHA-256 of the exact
+parsed bytes), an additive report-v1 file field. It is not a Git commit or stored
+history. Selected questions carry full content revisions plus relative ranges;
+stale/unverifiable bytes require refreshed evidence, not silent substitution.
+The scanner reads no additional file to create this digest. It uses RustCrypto
+[sha2 0.10.9](https://docs.rs/sha2/0.10.9/sha2/) with preserved dependency notices.
 A report and later source view are not an atomic snapshot.
 
 The native visualize skill determines the presentation: selected component detail
@@ -42,3 +54,9 @@ it does not call GPT or prove the quality of every future semantic answer.
 Runtime remains read-only with explicit inputs and results, no persistent state,
 network calls, command execution or cross-plugin calls. Install/update is the only
 shared-setting operation and remains coordinated separately.
+
+The native selection helper is host-fragment JavaScript only, adapted from the
+MIT Git inspector pattern at `6ccb4f19a3de701f889d8d8c7824c431d110ec5e`. No Node
+package or runtime is shipped/required by the Rust tools; Node's built-in test
+runner checks the helper in development/CI. All host UI/click/confirmation and GPT
+quality acceptance remain unverified by those synthetic tests.

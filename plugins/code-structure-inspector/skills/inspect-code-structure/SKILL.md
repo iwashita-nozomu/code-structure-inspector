@@ -1,12 +1,23 @@
 ---
 name: inspect-code-structure
-description: Explain an explicitly authorized repository's responsibilities, dependency meaning and candidate change impact with Codex GPT, source witnesses and a native visualization. Invoke only when the user requests code structure or dependency analysis.
+description: Explain an explicitly authorized repository's responsibilities, dependency meaning and candidate change impact with Codex GPT, source witnesses and a native visualization. Invoke explicitly for code structure or dependency analysis; a brief このレポを見て starts an in-figure overview then selected detail.
 ---
 
 Turn the code into an explanation the user can act on. The MCP tools observe
 structure; **Codex GPT performs the semantic reasoning**. Do not finish with a
 raw graph, file inventory, JSON dump or directory-name responsibility template.
 Use the user's language.
+
+## Default: overview → selected detail
+
+When explicitly selected, **「このレポを見て」** uses the current authorized root
+and starts with concise responsibilities, dependency reasons, candidate impact
+and witnesses **inside the figure**. Resolve an ambiguous root first. Respect
+「一覧だけ」/「図だけ」/「詳細不要」. Do not require a longer prompt or automatically
+explain a representative file at length. Follow [selected detail](references/selected-detail.md):
+selection stays local; only **詳しく聞く** passes registered file/range/full content
+revision references to a new question. Missing/rejected host support gets a copyable
+reference question. Keep the initial figure useful before selection.
 
 ## Workflow
 
@@ -22,7 +33,9 @@ Use the user's language.
    is unavailable, explain the evidence gap and keep meanings unconfirmed.
 3. Read the selected code, then reason about input, transformation, output,
    validation/error behavior and the boundary owned by each component. Cite
-   `relative/path:start-end` and the symbol. A filename such as `train.py` is not
+   `relative/path:start-end`, the symbol and its reported `content_revision`.
+   Bind source reads to the same exact bytes; if verification is unavailable,
+   keep that responsibility unconfirmed. The digest is not a Git commit. A filename such as `train.py` is not
    evidence that it trains a model. Separate **observed facts**, **GPT
    interpretations** and **unknowns**. Do not fill gaps with fabricated behavior.
 4. Explain why the relevant dependency exists using its import/include witness
@@ -40,9 +53,14 @@ Use the user's language.
    **native visualize** capability. Read/follow the available visualize skill;
    do not create a plugin renderer, HTTP server, WebView or shared orchestrator.
    Put responsibility summaries on nodes, the dependency's meaning on relevant
-   edges, and evidence/uncertainty in selected details. For a useful interactive
-   view, selection can reveal witnesses and highlight candidate incoming impact.
-   For a small static structure, follow native visualize's Mermaid routing.
+   edges, and evidence/uncertainty in selected details. Use [structure-selection.js](references/structure-selection.js) in a native
+   interactive view for the standard two-stage request: selection reveals existing
+   witnesses/highlights candidate impact, while an explicit 詳しく聞く button uses
+   feature-detected `sendFollowUpMessage({prompt,title})`. Pass references in the
+   prompt; widget state alone is insufficient. On the subsequent question, match
+   the authorized view and exact content revisions before bounded selected reads.
+   For a static-only user request or unavailable interaction, follow native
+   visualize's Mermaid routing and expose the reference question for copying.
    If native visualize is unavailable, say the diagram is a Mermaid/text fallback;
    do not install another plugin or claim a native view was shown.
 6. Before returning, check the [acceptance example](references/acceptance.md).

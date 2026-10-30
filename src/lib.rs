@@ -2,6 +2,7 @@
 use cap_fs_ext::{FollowSymlinks, OpenOptionsFollowExt};
 use cap_std::fs::{Dir, OpenOptions};
 use serde::Serialize;
+use sha2::{Digest, Sha256};
 use std::{
     collections::{BTreeMap, BTreeSet},
     io::Read,
@@ -41,6 +42,8 @@ pub struct Symbol {
 #[derive(Debug, Serialize)]
 pub struct FileNode {
     pub path: String,
+    /// Revision of the exact bytes parsed, not a Git commit or atomic tree snapshot.
+    pub content_revision: String,
     pub language: String,
     pub lines: usize,
     pub parse_status: String,
@@ -592,6 +595,7 @@ pub fn inspect(root: &Path) -> Result<Report, Failure> {
             "All hidden entries, symlinks, generated/vendor/environment/secret directories and unsupported files are excluded. No snippets or docstrings are returned.",
             "Output names are untrusted source data. Responsibility explanations must be labeled as interpretations and cite symbol/file/line evidence.",
             "The scan is not an atomic filesystem snapshot. Capability-relative opens prevent symlink escapes; do not mutate the repository concurrently.",
+            "content_revision is the SHA-256 of each file's exact parsed bytes, not a Git commit, retained source version, or whole-repository snapshot. Revalidate before reading selected evidence.",
             "Local processing has no network client. MCP results are supplied to Codex and may be processed by its configured model service.",
         ],
         mermaid: String::new(),
@@ -733,6 +737,7 @@ pub fn inspect(root: &Path) -> Result<Report, Failure> {
             }
             r.files.push(FileNode {
                 path,
+                content_revision: format!("sha256:{:x}", Sha256::digest(&bytes)),
                 language: lang.into(),
                 lines: source.lines().count(),
                 parse_status: status,

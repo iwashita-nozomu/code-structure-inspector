@@ -22,6 +22,12 @@ interpretations for Codex to support with declaration and source evidence. No
 compiler, build, import, shell, compile database, renderer or repository-provided
 command is run. See [analysis limits](docs/ANALYSIS.md) before drawing conclusions.
 
+With the plugin explicitly selected, 「このレポを見て」 defaults to short roles,
+dependency reasons and conditional impact inside the native figure. Select a node
+or edge, then use 詳しく聞く to pass its file/range/content-revision references
+for a bounded explanation. Selecting alone sends nothing; unsupported hosts offer
+a copyable reference question. Content revisions are file SHA-256, not Git commits.
+
 For the meaning/diagram workflow, selected source budget, fallback behavior and
 synthetic user-facing acceptance example, see [semantic workflow](docs/SEMANTIC_WORKFLOW.md).
 
@@ -62,7 +68,7 @@ catalog submission is required. See [installation](docs/INSTALL.md).
 
 ## Build and check
 
-Rust 1.99.1, a C/C++ build toolchain, and Python 3.11+ are needed for development.
+Rust 1.99.1, a C/C++ build toolchain, Python 3.11+, and Node 22+ (helper tests only) are needed for development.
 Tree-sitter grammars are compiled from locked registry sources. The analyzer never
 compiles the repository it is inspecting.
 
@@ -71,6 +77,7 @@ cargo fmt --check
 cargo clippy --locked --all-targets -- -D warnings
 cargo test --locked --offline
 cargo build --locked --release --offline
+node --test scripts/test-structure-selection.cjs
 python3 scripts/licenses.py --check
 python3 scripts/check_package.py
 python3 scripts/package.py --target aarch64-apple-darwin --binary target/release/code-structure-inspector

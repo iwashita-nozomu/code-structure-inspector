@@ -20,7 +20,8 @@ No layout or Chat/Work display is verified merely because a plan or HTML exists.
 Use only the sections that answer the question; logical panels need not become
 visible cards. A typical view has `responsibilities`, `dependencies` and `impact`.
 
-- `view_id`: a stable response-local key, such as `code-responsibilities`.
+- `view_id`: a stable response-local key, such as `code-responsibilities`, bound
+  to the authorized root in the conversation. It is not a Git revision.
 - `panels`: explicit `id`, changeable `title`, and the IDs of relevant claims,
   nodes and edges. An ID is never a title, array position or automatically assigned
   letter. Keep IDs unique; do not reuse a removed ID for a different component.
@@ -34,7 +35,7 @@ visible cards. A typical view has `responsibilities`, `dependencies` and `impact
   A candidate impact overlay uses `gpt_interpretation`, never a fabricated fact.
 - `evidence`: source-selection or observed-import IDs tied to the current root,
   selected source ranges and report. Keep the same citation IDs in the prose and
-  node/edge details. A role sentence and its figure label must not cite different
+  node/edge details, including the exact `files[].content_revision`. A role sentence and its figure label must not cite different
   evidence for the same claim.
 - `layout`: a host-supported strategy/direction only. Do not place source snippets,
   literal/private values, absolute roots, HTML/scripts or geometry in this plan.
@@ -63,3 +64,14 @@ citations. Reject a dangling link or missing witness; keep it unknown rather tha
 silently repairing it with a guess. Retain ambiguity/layout-candidate labels.
 Then render through the host and perform actual display QA separately. The plan
 and fixture tests do not prove model reasoning quality, layout or screen behavior.
+
+## Default two-stage interaction
+
+For 「このレポを見て」 with this plugin explicitly selected, put short roles,
+dependency reasons and conditional impact **inside** the initial figure with
+source references. Do not start with an empty graph or hide all meaning in prose.
+Follow [selected detail](selected-detail.md) and inline its [selection helper](structure-selection.js)
+to bind real node/edge buttons by the existing IDs. Selection alone never starts
+a turn. Only 詳しく聞く passes registered file/range/content-revision/claim/evidence
+references via sendFollowUpMessage, with a manual-copy fallback. On arrival, verify
+those same content revisions before additional bounded evidence reads.

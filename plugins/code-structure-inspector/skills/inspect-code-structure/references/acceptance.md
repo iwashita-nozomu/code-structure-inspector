@@ -1,5 +1,17 @@
 # User-facing acceptance
 
+## Brief-input standard acceptance
+
+With this plugin explicitly selected, user: **「このレポを見て」**. On the current
+authorized synthetic repository, render the small meaning/evidence figure first.
+Use the roles/reasons/conditional impact below inside it, not a filename-only
+graph followed by a long representative-file explanation. Selecting a node/edge
+only changes local details. 詳しく聞く delivers that target's exact file/ranges,
+full content revisions and claim/evidence IDs; source reads then remain bounded.
+Without the host bridge, expose the same reference question for copying.
+「一覧だけ」 and missing/ambiguous root are scope constraints, not permission to
+run this full flow. See [selection contract](selected-detail.md).
+
 ## Misleading names, source-backed meaning
 
 User: "このコード、何がどの責務を持つかと、入力仕様を変える影響を図で説明して。"
@@ -30,7 +42,8 @@ A useful Codex GPT answer, after reading those selected ranges, is:
 
 Then show a native visualization whose nodes say **行の変換をまとめる**,
 **十進数字を検証・整数化**, **整数列を合計**, keeping file names secondary.
-Selecting the validation node should reveal its relative source witness and
+Selecting the validation node should reveal its relative source witness/full
+content revision and
 highlight the candidate caller impact, with no copied code or literal data values.
 Follow the host visualize skill: an interactive selected-detail graph fits native
 visualize, while a small static graph may be routed to Mermaid.
@@ -73,3 +86,7 @@ these workflow/reference files are packaged and explicit invocation is retained.
 They do not call an AI API or assert that a model always generates the golden
 wording. Evaluate a live Codex response against the meaning, evidence, uncertainty
 and diagram contract; fluent prose, a graph alone or path-name guesses do not pass.
+
+Automated short-input/selection fixtures exercise the registered-reference and
+mock bridge contract, including stale hashes and include-only relationships. They
+do not prove GPT compliance with brief prompts or real Chat/Work button delivery.

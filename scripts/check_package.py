@@ -2,6 +2,7 @@
 """Verify manifests, schema contract, stdio discovery and synthetic read without network."""
 import argparse
 import json
+import re
 from pathlib import Path
 import subprocess
 import tomllib
@@ -16,6 +17,8 @@ def validate(value, schema, document):
         return validate(value, resolved, document)
     if 'const' in schema:
         assert value == schema['const']
+    if 'pattern' in schema and isinstance(value, str):
+        assert re.fullmatch(schema['pattern'], value)
     if 'enum' in schema:
         assert value in schema['enum']
     kind = schema.get('type')
@@ -59,10 +62,11 @@ def check(binary=None):
     assert (skill/'SKILL.md').read_text(encoding="utf-8").startswith('---\nname: inspect-code-structure\n')
     assert 'allow_implicit_invocation: false' in (skill/'agents/openai.yaml').read_text(encoding="utf-8")
     workflow=(skill/'SKILL.md').read_text(encoding="utf-8")
-    for reference in ['source-evidence.md','acceptance.md','figure-contract.md']:
+    for reference in ['source-evidence.md','acceptance.md','figure-contract.md','selected-detail.md','structure-selection.js']:
         assert ('references/'+reference) in workflow
         text=(skill/'references'/reference).read_text(encoding="utf-8")
         assert len(text)>500
+    assert 'このレポを見て' in workflow and '詳しく聞く' in workflow and 'sendFollowUpMessage' in workflow
     assert 'Codex GPT' in workflow and 'native visualize' in workflow
     assert not any(p.is_symlink() for p in PLUGIN.rglob('*'))
     for p in PLUGIN.rglob('*.json'):
@@ -87,6 +91,9 @@ def check(binary=None):
         contract=json.loads((ROOT/'tests/semantic_contract.json').read_text(encoding="utf-8"))
         validate(semantics,schema,schema)
         assert semantics['dependencies']==contract['import_facts']
+        import hashlib
+        for file in semantics['files']:
+            assert file['content_revision']=='sha256:'+hashlib.sha256((ROOT/'tests/semantic-fixtures'/file['path']).read_bytes()).hexdigest()
         for selected in contract['selections']:
             file=next(f for f in semantics['files'] if f['path']==selected['path'])
             assert any(s['name']==selected['symbol'] and s['start_line']==selected['start_line'] and s['end_line']==selected['end_line'] for s in file['symbols'])
@@ -108,7 +115,7 @@ def check(binary=None):
 
 def check_packaged_launch(stage):
     stage=stage.resolve()
-    for reference in ['SKILL.md','references/source-evidence.md','references/acceptance.md','references/figure-contract.md']:
+    for reference in ['SKILL.md','references/source-evidence.md','references/acceptance.md','references/figure-contract.md','references/selected-detail.md','references/structure-selection.js']:
         relative=Path('skills/inspect-code-structure')/reference
         assert (stage/relative).read_bytes()==(PLUGIN/relative).read_bytes()
     for filename in ['mcp.json','.mcp.json']:

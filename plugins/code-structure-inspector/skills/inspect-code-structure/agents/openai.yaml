@@ -1,6 +1,6 @@
 interface:
   display_name: "Explain Code Responsibilities"
   short_description: "GPT explains code with source evidence"
-  default_prompt: "Use Codex GPT to explain my authorized code's responsibilities, dependency meaning and candidate impact with source witnesses and a native visualization."
+  default_prompt: "このレポを見て。図内の責務・依存理由・候補影響と根拠を示し、選択して詳しく聞けるようにしてください。"
 policy:
   allow_implicit_invocation: false
